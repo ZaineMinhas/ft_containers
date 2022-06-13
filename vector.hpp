@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/09 19:09:44 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/13 19:34:14 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,28 +21,72 @@ namespace ft
 	class vector
 	{
 		public:
-			typedef T											value_type;
-			typedef Alloc										allocator_type;
-			typedef typename allocator_type::reference			reference;
-			typedef typename allocator_type::const_reference	const_reference;
-			typedef typename allocator_type::pointer			pointer;
-			typedef typename allocator_type::const_pointer		const_pointer;
+			typedef T									value_type;
+			typedef Alloc								allocator_type;
+			typedef allocator_type::reference			reference;
+			typedef allocator_type::const_reference		const_reference;
+			typedef allocator_type::pointer				pointer;
+			typedef allocator_type::const_pointer		const_pointer;
+			typedef std::ptrdiff_t						difference_type;
+			typedef std::size_t							size_type;
 
 			/*-------------------------- Constructor --------------------------*/
 
-			explicit vector(const allocator_type& alloc = allocator_type());
-			explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type());
+			explicit vector(const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc) {
+				_vector = _alloc.allocate(0);
+			}
+
+			explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _size(n), _capacity(n), _alloc(alloc)
+			{
+				_vector = _alloc.allocate(_capacity);
+				for (size_type i = 0; i < _size; i++)
+					_alloc.construct(_vector + i, val);
+			}
+
 			template <class InputIterator>
-			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());
-			vector(const vector& x);
+			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0) _alloc(alloc)
+			{
+				while (first < last)
+				{
+					_size++
+					first++;
+				}
+				_capacity = _size;
+				_vector = alloc.allocate(_capacity);
+				first -= _size;
+				for (size_type i = 0; first < last; i++)
+				{
+					_alloc.construct(_vector + i, *first);
+					first++;
+				}
+			}
+
+			vector(const vector &x) : _size(x.size()), _capacity(x.capacity()), _alloc(get_allocator())
+			{
+				_vector = _alloc.allocate(_capacity);
+				for (size_type i = 0; i < _size; i++)
+					_alloc.construct(_vector + i, x[i]);
+			}
 
 			/*-------------------------- Destructor ---------------------------*/
 
-			~vector();
+			~vector()
+			{
+				for (size_type i = 0; i < _size; i++)
+					_alloc.destroy(_vector + i);
+				_alloc.deallocate(_vector, _capacity);
+			}
 
 			/*-------------------------- Operator= ----------------------------*/
 
-			vector	&operator=(const vector &x);
+			vector	&operator=(const vector &x)
+			{
+				_alloc = x.get_allocator();
+				_capacity = x.capacity();
+				_size = x.size();
+				for (size_type i = 0; i < _size; i++)
+					&_vector[i] = x[i];
+			}
 
 			/*-------------------------- Iterators ----------------------------*/
 
@@ -57,23 +101,79 @@ namespace ft
 
 			/*-------------------------- Capacity -----------------------------*/
 
-			size_type	size() const;
-			size_type	max_size() const;
-			void		resize(size_type n, value_type val = value_type());
-			size_type	capacity() const;
-			bool		empty() const;
-			void		reserve(size_type n);
+			size_type	size() const { return (_size); }
+
+			size_type	max_size() const { return (allocator_type::max_size()); }
+
+			void		resize(size_type n, value_type val = value_type())
+			{
+				if (n == _size)
+					return ;
+				else if (n < _size)
+				{
+					while (_size > n)
+					{
+						_alloc.destroy(&_vector[_size]);
+						_size--;
+					}
+				}
+				else
+				{
+					if (n > _capacity)
+					{
+						reserve(n);
+						while (_size < n)
+							_alloc.construct(&_vector[_size++], val);
+					}
+					else
+						while (_size < n)
+							_alloc.construct(&_vector[_size++], val);
+				}
+			}
+
+			size_type	capacity() const { return (_capacity); }
+
+			bool		empty() const { return (!_size); }
+
+			void		reserve(size_type n)
+			{
+				if (n <= _capacity)
+					return ;
+				vector	tmp(*this);
+				~vector();
+				_capacity = n;
+				_vector = _alloc.allocate(_capacity);
+				for (size_type i = 0; i < tmp.size(); i++)
+					_alloc.construct(&_vector[i], tmp[i]);
+			}
 
 			/*------------------------- Element acces -------------------------*/
 
-			reference		operator[](size_type n);
-			const_reference	operator[](size_type n) const;
-			reference		at(size_type n);
-			const_reference	at(size_type n) const;
-			reference		front();
-			const_reference	front() const;
-			reference		back();
-			const_reference	back() const;
+			reference		operator[](size_type n) { return (_vector[n]); }
+
+			const_reference	operator[](size_type n) const { return (_vector[n]); }
+
+			reference		at(size_type n)
+			{
+				if (n >= _size || n < 0)
+					throw (std::out_of_range());
+				return (_vector[n]);
+			}
+
+			const_reference	at(size_type n) const
+			{
+				if (n >= _size || n < 0)
+					throw (std::out_of_range());
+				return (_vector[n]);
+			}
+
+			reference		front() { return (_vector[0]); }
+
+			const_reference	front() const { return (_vector[0]); }
+
+			reference		back() { return (_vector[_size - 1]); }
+
+			const_reference	back() const { return (_vector[_size - 1]); }
 
 			/*-------------------------- Modifiers ----------------------------*/
 
@@ -93,7 +193,7 @@ namespace ft
 
 			/*-------------------------- Allocator ----------------------------*/
 
-			allocator_type	get_allocator() const;
+			allocator_type	get_allocator() const { return (_alloc); }
 
 			/*-------------------- Template specializations -------------------*/
 
@@ -101,7 +201,11 @@ namespace ft
 			template <class Alloc> class vector<bool,Alloc>;
 
 		private:
-		
+			allocator_type	_alloc;
+			value_type		*_vector;
+			size_type		_size;
+			size_type		_capacity;
+
 	};
 }
 #endif
