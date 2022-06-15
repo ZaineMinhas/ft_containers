@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/13 19:34:14 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/15 21:26:16 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ namespace ft
 
 			~vector()
 			{
-				for (size_type i = 0; i < _size; i++)
-					_alloc.destroy(_vector + i);
+				while (_size)
+					_alloc.destroy(&_vector[--_size]);
 				_alloc.deallocate(_vector, _capacity);
 			}
 
@@ -180,16 +180,40 @@ namespace ft
 			template <class InputIterator>
   			void		assign(InputIterator first, InputIterator last);
 			void		assign(size_type n, const value_type& val);
-			void		push_back(const value_type& val);
-			void		pop_back();
+	
+			void		push_back(const value_type &val)
+			{
+				if (_size + 1 >= _capacity)
+					reserve((_capacity + 1) * 2);
+				&_vector[_size++] = val;
+			}
+
+			void		pop_back()
+			{
+				if (!_size)
+					return ;
+				_alloc.destroy(&_vector[--_size]);
+			}
+
 			iterator	insert(iterator position, const value_type& val);
 			void		insert(iterator position, size_type n, const value_type& val);
 			template <class InputIterator>
 			void		insert(iterator position, InputIterator first, InputIterator last);
 			iterator	erase(iterator position);
 			iterator	erase(iterator first, iterator last);
-			void		swap(vector& x);
-			void		clear();
+
+			void		swap(vector& x)
+			{
+				vector	tmp(*this);
+				*this = x;
+				x = tmp;
+			}
+
+			void		clear()
+			{
+				while (_size)
+					_alloc.destroy(&_vector[--_size]);
+			}
 
 			/*-------------------------- Allocator ----------------------------*/
 
