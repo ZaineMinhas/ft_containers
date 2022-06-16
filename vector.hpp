@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/15 21:26:16 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/16 19:36:38 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,22 @@ namespace ft
 	class vector
 	{
 		public:
-			typedef T									value_type;
-			typedef Alloc								allocator_type;
-			typedef allocator_type::reference			reference;
-			typedef allocator_type::const_reference		const_reference;
-			typedef allocator_type::pointer				pointer;
-			typedef allocator_type::const_pointer		const_pointer;
-			typedef std::ptrdiff_t						difference_type;
-			typedef std::size_t							size_type;
+			typedef T											value_type;
+			typedef Alloc										allocator_type;
+			typedef typename allocator_type::reference			reference;
+			typedef typename allocator_type::const_reference	const_reference;
+			typedef typename allocator_type::pointer			pointer;
+			typedef typename allocator_type::const_pointer		const_pointer;
+			typedef std::ptrdiff_t								difference_type;
+			typedef std::size_t									size_type;
 
 			/*-------------------------- Constructor --------------------------*/
 
-			explicit vector(const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc) {
+			explicit vector(const allocator_type &alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc) {
 				_vector = _alloc.allocate(0);
 			}
 
-			explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _size(n), _capacity(n), _alloc(alloc)
+			explicit vector(size_type n, const value_type &val = value_type(), const allocator_type& alloc = allocator_type()) : _size(n), _capacity(n), _alloc(alloc)
 			{
 				_vector = _alloc.allocate(_capacity);
 				for (size_type i = 0; i < _size; i++)
@@ -178,8 +178,20 @@ namespace ft
 			/*-------------------------- Modifiers ----------------------------*/
 
 			template <class InputIterator>
-  			void		assign(InputIterator first, InputIterator last);
-			void		assign(size_type n, const value_type& val);
+  			void		assign(InputIterator first, InputIterator last)
+			{
+				while (first < last)
+				{
+					push_back(*first);
+					first++;
+				}
+			}
+
+			void		assign(size_type n, const value_type &val)
+			{
+				for (size_type i = 0; i < n; i++)
+					push_back(val);
+			}
 	
 			void		push_back(const value_type &val)
 			{
@@ -195,14 +207,14 @@ namespace ft
 				_alloc.destroy(&_vector[--_size]);
 			}
 
-			iterator	insert(iterator position, const value_type& val);
-			void		insert(iterator position, size_type n, const value_type& val);
+			iterator	insert(iterator position, const value_type &val);
+			void		insert(iterator position, size_type n, const value_type &val);
 			template <class InputIterator>
 			void		insert(iterator position, InputIterator first, InputIterator last);
 			iterator	erase(iterator position);
 			iterator	erase(iterator first, iterator last);
 
-			void		swap(vector& x)
+			void		swap(vector &x)
 			{
 				vector	tmp(*this);
 				*this = x;
