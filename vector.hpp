@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/16 19:36:38 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/17 17:15:11 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ namespace ft
 	{
 		public:
 			typedef T											value_type;
+			typedef const T										const_value_type;
 			typedef Alloc										allocator_type;
 			typedef typename allocator_type::reference			reference;
 			typedef typename allocator_type::const_reference	const_reference;
@@ -29,6 +30,8 @@ namespace ft
 			typedef typename allocator_type::const_pointer		const_pointer;
 			typedef std::ptrdiff_t								difference_type;
 			typedef std::size_t									size_type;
+			typedef ft::RandomAccessIterator<value_type>		iterator;
+			typedef ft::RandomAccessIterator<const_value_type>	const_iterator;
 
 			/*-------------------------- Constructor --------------------------*/
 
@@ -44,11 +47,11 @@ namespace ft
 			}
 
 			template <class InputIterator>
-			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0) _alloc(alloc)
+			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc)
 			{
 				while (first < last)
 				{
-					_size++
+					_size++;
 					first++;
 				}
 				_capacity = _size;
@@ -233,7 +236,7 @@ namespace ft
 
 			/*-------------------- Template specializations -------------------*/
 
-			template < class T, class Alloc = allocator<T> > class vector;
+			template < class T, class Alloc = std::allocator<T> > class vector;
 			template <class Alloc> class vector<bool,Alloc>;
 
 		private:
