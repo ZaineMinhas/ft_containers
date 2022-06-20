@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/17 17:15:11 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/20 17:32:26 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 namespace ft
 {
-	template < class T, class Alloc = std::allocator<T> >
+	template <class T, class Alloc = std::allocator<T> >
 	class vector
 	{
 		public:
@@ -30,8 +30,8 @@ namespace ft
 			typedef typename allocator_type::const_pointer		const_pointer;
 			typedef std::ptrdiff_t								difference_type;
 			typedef std::size_t									size_type;
-			typedef ft::RandomAccessIterator<value_type>		iterator;
-			typedef ft::RandomAccessIterator<const_value_type>	const_iterator;
+			typedef ft::random_access_iterator<value_type>		iterator;
+			typedef ft::random_access_iterator<const_value_type>	const_iterator;
 
 			/*-------------------------- Constructor --------------------------*/
 
@@ -93,14 +93,14 @@ namespace ft
 
 			/*-------------------------- Iterators ----------------------------*/
 
-			iterator				begin();
-			const_iterator			begin() const;
-			iterator				end();
-			const_iterator			end() const;
-			reverse_iterator		rbegin();
-			const_reverse_iterator	rbegin() const;
-			reverse_iterator		rend();
-			const_reverse_iterator	rend() const;
+			iterator				begin() { return (_vector); }
+			const_iterator			begin() const { return (_vector); }
+			iterator				end() { return (&_vector[_size]); }
+			const_iterator			end() const { return (&_vector[_size]); }
+			reverse_iterator		rbegin() { return (&_vector[_size - 1]); }
+			const_reverse_iterator	rbegin() const { return (&_vector[_size - 1]); }
+			reverse_iterator		rend() { return (_vector - 1); }
+			const_reverse_iterator	rend() const { return (_vector - 1); }
 
 			/*-------------------------- Capacity -----------------------------*/
 
@@ -210,8 +210,24 @@ namespace ft
 				_alloc.destroy(&_vector[--_size]);
 			}
 
-			iterator	insert(iterator position, const value_type &val);
+			iterator	insert(iterator position, const value_type &val)
+			{
+				size_type	pos = 0;
+				for (; pos <= _size; pos++)
+					if (_vector + pos == &*position)
+						break ;
+				if (pos > _size)
+					throw (std::out_of_range());
+				reserve(++_size);
+				for (size_type i = 0; i < _size - 1 - pos; i++)
+					_vector[_size - i] = _vector[_size - i - 1];
+				_vector[pos] = val;
+				return (_vector + pos);
+			}
+
 			void		insert(iterator position, size_type n, const value_type &val);
+
+
 			template <class InputIterator>
 			void		insert(iterator position, InputIterator first, InputIterator last);
 			iterator	erase(iterator position);

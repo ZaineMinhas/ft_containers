@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 16:39:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/17 19:38:18 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/20 16:24:55 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,14 +184,6 @@ namespace ft
 
 			iterator_type	base(void) const { return (_it); }
 
-			/*----- Assignation operator -----*/
-
-			reverse_iterator<iterator_type>		&operator=(reverse_iterator<iterator_type> &lhs)
-			{
-				_it = lhs.base();
-				return (*this);
-			}
-
 			/*----- Dereference operator -----*/
 
 			reference	operator*() const
@@ -262,15 +254,9 @@ namespace ft
 				return (*this);
 			}
 
-			reverse_iterator	&operator(difference_type n)
-			{
-				_it += n;
-				return (*this);
-			}
-
 			/*----- Dereference [] operator -----*/
 
-			reference	operator[](difference_type n) const { return (*(*this + n)) }
+			reference	operator[](difference_type n) const { return (*(*this + n)); }
 
 		private:
 			iterator_type	_it;
@@ -294,7 +280,7 @@ namespace ft
 	/*----- Addition operator -----*/
 
 	template <class Iterator>
-	reverse_iterator<Iterator> operator+(typename reverse_iterator<Iterator>::difference_type n, const reverse_iterator<Iterator> &x) { return (reverse_iterator(x.base() - n)); }
+	reverse_iterator<Iterator> operator+(typename reverse_iterator<Iterator>::difference_type n, const reverse_iterator<Iterator> &x) { return (reverse_iterator<Iterator>(x.base() - n)); }
 
 	/*----- Subtraction operator -----*/
 
