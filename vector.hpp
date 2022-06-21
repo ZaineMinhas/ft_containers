@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/20 17:32:26 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/21 20:43:11 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,7 @@ namespace ft
 
 			~vector()
 			{
-				while (_size)
-					_alloc.destroy(&_vector[--_size]);
+				clear();
 				_alloc.deallocate(_vector, _capacity);
 			}
 
@@ -225,13 +224,74 @@ namespace ft
 				return (_vector + pos);
 			}
 
-			void		insert(iterator position, size_type n, const value_type &val);
-
+			void		insert(iterator position, size_type n, const value_type &val)
+			{
+				size_type	pos = 0;
+				for (; pos <= _size; pos++)
+					if (_vector + pos == &*position)
+						break ;
+				if (pos > _size)
+					throw (std::out_of_range());
+				_size += n;
+				reserve(_size + n);
+				for (size_type i = 0; i < _size - n - pos + 1; i++)
+					_vector[_size - i] = _vector[_size - i - 1];
+				for (size_type i = 0; i < n; i++)
+					_vector[pos + i] = val;
+			}
 
 			template <class InputIterator>
-			void		insert(iterator position, InputIterator first, InputIterator last);
-			iterator	erase(iterator position);
-			iterator	erase(iterator first, iterator last);
+			void		insert(iterator position, InputIterator first, InputIterator last)
+			{
+				size_type	pos = 0;
+				size_type	n = last - first;
+				for (; pos <= _size; pos++)
+					if (_vector + pos == &*position)
+						break ;
+				if (pos > _size)
+					throw (std::out_of_range());
+				_size += n;
+				reserve(_size + n);
+				for (size_type i = 0; i < _size - n - pos + 1; i++)
+					_vector[_size - i] = _vector[_size - i - 1];
+				for (size_type i = 0; i < n; i++)
+				{
+					_vector[pos + i] = *first;
+					first++;
+				}
+			}
+
+			iterator	erase(iterator position)
+			{
+				size_type	pos = 0;
+				for (; pos <= _size; pos++)
+					if (_vector + pos == &*position)
+						break ;
+				if (pos > _size)
+					throw (std::out_of_range());
+				_alloc.destroy(&_vector[pos]);
+				for (size_type i = pos; i < _size; i++)
+					_vector[i] = _vector[i + 1];
+				_size--;
+				return (_vector + pos + 1);
+			}
+
+			iterator	erase(iterator first, iterator last)
+			{
+				size_type	pos = 0;
+				for (; pos <= _size; pos++)
+					if (_vector + pos == &*first)
+						break ;
+				if (pos > _size)
+					throw (std::out_of_range());
+				size_type	n = last - first;
+				for (size_type i = 0; i < n; i++)
+					_alloc.destroy(&_vector[pos + i]);
+				for (size_type i = 0; i < _size - pos - n; i++)
+					_vector[pos + i] = _vector[pos + i + n];
+				_size -= n;
+				return (_vector + pos + n);
+			}
 
 			void		swap(vector &x)
 			{
@@ -249,6 +309,10 @@ namespace ft
 			/*-------------------------- Allocator ----------------------------*/
 
 			allocator_type	get_allocator() const { return (_alloc); }
+
+			/*--------------------- relational operators ----------------------*/
+
+			
 
 			/*-------------------- Template specializations -------------------*/
 
