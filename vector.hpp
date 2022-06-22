@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/22 05:38:43 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/22 17:46:41 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,14 +159,14 @@ namespace ft
 			reference		at(size_type n)
 			{
 				if (n >= _size || n < 0)
-					throw (std::out_of_range());
+					throw (std::out_of_range("index out of range"));
 				return (_vector[n]);
 			}
 
 			const_reference	at(size_type n) const
 			{
 				if (n >= _size || n < 0)
-					throw (std::out_of_range());
+					throw (std::out_of_range("index out of range"));
 				return (_vector[n]);
 			}
 
@@ -217,7 +217,7 @@ namespace ft
 					if (_vector + pos == &*position)
 						break ;
 				if (pos > _size)
-					throw (std::out_of_range());
+					throw (std::out_of_range("index out of range"));
 				reserve(++_size);
 				for (size_type i = 0; i < _size - 1 - pos; i++)
 					_vector[_size - i] = _vector[_size - i - 1];
@@ -232,7 +232,7 @@ namespace ft
 					if (_vector + pos == &*position)
 						break ;
 				if (pos > _size)
-					throw (std::out_of_range());
+					throw (std::out_of_range("index out of range"));
 				_size += n;
 				reserve(_size + n);
 				for (size_type i = 0; i < _size - n - pos + 1; i++)
@@ -250,7 +250,7 @@ namespace ft
 					if (_vector + pos == &*position)
 						break ;
 				if (pos > _size)
-					throw (std::out_of_range());
+					throw (std::out_of_range("index out of range"));
 				_size += n;
 				reserve(_size + n);
 				for (size_type i = 0; i < _size - n - pos + 1; i++)
@@ -269,7 +269,7 @@ namespace ft
 					if (_vector + pos == &*position)
 						break ;
 				if (pos > _size)
-					throw (std::out_of_range());
+					throw (std::out_of_range("index out of range"));
 				_alloc.destroy(&_vector[pos]);
 				for (size_type i = pos; i < _size; i++)
 					_vector[i] = _vector[i + 1];
@@ -284,7 +284,7 @@ namespace ft
 					if (_vector + pos == &*first)
 						break ;
 				if (pos > _size)
-					throw (std::out_of_range());
+					throw (std::out_of_range("index out of range"));
 				size_type	n = last - first;
 				for (size_type i = 0; i < n; i++)
 					_alloc.destroy(&_vector[pos + i]);
@@ -327,7 +327,7 @@ namespace ft
 	{
 		if (lhs.size() != rhs.size())
 			return (false);
-		for (size_type i = 0; i < lhs.size(); i++)
+		for (typename vector<T,Alloc>::size_type i = 0; i < lhs.size(); i++)
 			if (lhs[i] != rhs[i])
 				return (false);
 		return (true);
@@ -338,7 +338,7 @@ namespace ft
 	{
 		if (lhs.size() == rhs.size())
 			return (false);
-		for (size_type i = 0; i < lhs.size(); i++)
+		for (typename vector<T,Alloc>::size_type i = 0; i < lhs.size(); i++)
 			if (lhs[i] == rhs[i])
 				return (false);
 		return (true);
@@ -347,14 +347,14 @@ namespace ft
 	template <class T, class Alloc>
 	bool	operator<(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
 	{
-		for (vector<T,Alloc>::size_type i = 0; i < lhs.size() && i < rhs.size(); i++)
+		for (typename vector<T,Alloc>::size_type i = 0; i < lhs.size() && i < rhs.size(); i++)
 		{
 			if (lhs[i] < rhs[i])
 				return (true);
 			else if (lhs[i] > rhs[i])
 				return (false);
 		}
-		if (lhs[i] < rhs[i])
+		if (lhs.size() < rhs.size())
 			return (true);
 		return (false);
 	}
@@ -362,14 +362,14 @@ namespace ft
 	template <class T, class Alloc>
 	bool	operator<=(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
 	{
-		for (vector<T,Alloc>::size_type i = 0; i < lhs.size() && i < rhs.size(); i++)
+		for (typename vector<T,Alloc>::size_type i = 0; i < lhs.size() && i < rhs.size(); i++)
 		{
 			if (lhs[i] <= rhs[i])
 				return (true);
 			else if (lhs[i] > rhs[i])
 				return (false);
 		}
-		if (lhs[i] <= rhs[i])
+		if (lhs.size() <= rhs.size())
 			return (true);
 		return (false);
 	}
@@ -377,14 +377,14 @@ namespace ft
 	template <class T, class Alloc>
 	bool	operator>(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
 	{
-		for (vector<T,Alloc>::size_type i = 0; i < lhs.size() && i < rhs.size(); i++)
+		for (typename vector<T,Alloc>::size_type i = 0; i < lhs.size() && i < rhs.size(); i++)
 		{
 			if (lhs[i] > rhs[i])
 				return (true);
 			else if (lhs[i] < rhs[i])
 				return (false);
 		}
-		if (lhs[i] > rhs[i])
+		if (lhs.size() > rhs.size())
 			return (true);
 		return (false);
 	}
@@ -392,14 +392,14 @@ namespace ft
 	template <class T, class Alloc>
 	bool	operator>=(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
 	{
-		for (vector<T,Alloc>::size_type i = 0; i < lhs.size() && i < rhs.size(); i++)
+		for (typename vector<T,Alloc>::size_type i = 0; i < lhs.size() && i < rhs.size(); i++)
 		{
 			if (lhs[i] >= rhs[i])
 				return (true);
 			else if (lhs[i] < rhs[i])
 				return (false);
 		}
-		if (lhs[i] >= rhs[i])
+		if (lhs.size() >= rhs.size())
 			return (true);
 		return (false);
 	}
