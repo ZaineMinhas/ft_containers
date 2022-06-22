@@ -6,17 +6,14 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 16:39:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/20 16:24:55 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/22 04:58:58 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ITERATOR_HPP
 # define ITERATOR_HPP
 
-# include <iostream>
-# include <iterator>
-# include <memory>
-# include <deque>
+# include "utils.hpp"
 
 namespace ft
 {
