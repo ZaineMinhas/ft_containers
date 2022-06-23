@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/22 17:46:41 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/23 16:34:56 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ namespace ft
 			typedef std::ptrdiff_t									difference_type;
 			typedef std::size_t										size_type;
 			typedef ft::random_access_iterator<value_type>			iterator;
+			typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
+			typedef const reverse_iterator					const_reverse_iterator;
 			typedef ft::random_access_iterator<const_value_type>	const_iterator;
 
 			/*-------------------------- Constructor --------------------------*/
@@ -413,11 +415,5 @@ namespace ft
 		x = y;
 		y = tmp;
 	}
-
-	/*-------------------- Template specializations -------------------*/
-
-	template < class T, class Alloc = std::allocator<T> > class vector;
-	template <class Alloc> class vector<bool,Alloc>;
-
 }
 #endif
