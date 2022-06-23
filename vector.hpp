@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/23 16:34:56 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/23 16:52:20 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,9 @@ namespace ft
 				_alloc = x.get_allocator();
 				_capacity = x.capacity();
 				_size = x.size();
+				_vector = _alloc.allocate(_capacity);
 				for (size_type i = 0; i < _size; i++)
-					&_vector[i] = x[i];
+					_alloc.construct(&_vector[i], v.at(i));
 			}
 
 			/*-------------------------- Iterators ----------------------------*/
