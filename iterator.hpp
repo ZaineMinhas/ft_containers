@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 16:39:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/22 04:58:58 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/24 19:16:20 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ namespace ft
 			/*----- Constructors -----*/
 
 			random_access_iterator() : _ptr(NULL) {}
-			random_access_iterator(random_access_iterator &src) : _ptr(src.base()) {}
+			random_access_iterator(random_access_iterator const &src) : _ptr(src.base()) {}
 			random_access_iterator(pointer ptr) : _ptr(ptr) {}
 
 			/*----- Destructor -----*/
@@ -57,7 +57,7 @@ namespace ft
 
 			/*----- Assignation operator -----*/
 
-			random_access_iterator	operator=(random_access_iterator const &rhs)
+			random_access_iterator	&operator=(random_access_iterator const &rhs)
 			{
 				_ptr = rhs.base();
 				return (*this);
@@ -141,17 +141,39 @@ namespace ft
 	/*----- Relationals operators -----*/
 
 	template <class Iterator>
-	bool	operator==(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs) { return (lhs.base() == rhs.base()); }
+	bool	operator==(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs)
+	{ return (lhs.base() == rhs.base()); }
 	template <class Iterator>
-	bool	operator!=(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs) { return (lhs.base() != rhs.base()); }
+	bool	operator!=(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs)
+	{ return (lhs.base() != rhs.base()); }
 	template <class Iterator>
-	bool	operator<=(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs) { return (lhs.base() <= rhs.base()); }
+	bool	operator<=(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs)
+	{ return (lhs.base() <= rhs.base()); }
 	template <class Iterator>
-	bool	operator>=(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs) { return (lhs.base() >= rhs.base()); }
+	bool	operator>=(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs)
+	{ return (lhs.base() >= rhs.base()); }
 	template <class Iterator>
-	bool	operator<(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs) { return (lhs.base() < rhs.base()); }
+	bool	operator<(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs)
+	{ return (lhs.base() < rhs.base()); }
 	template <class Iterator>
-	bool	operator>(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs) { return (lhs.base() > rhs.base()); }
+	bool	operator>(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs)
+	{ return (lhs.base() > rhs.base()); }
+
+	/*----- Subtraction operator -----*/
+
+	template <class L_T, class R_T>
+	typename random_access_iterator<L_T>::difference_type	operator-(random_access_iterator<L_T> const &lhs, random_access_iterator<R_T> const &rhs)
+	{ return lhs.base() - rhs.base(); }
+
+	template <class Iterator>
+	random_access_iterator<Iterator>	operator-(typename random_access_iterator<Iterator>::difference_type n, random_access_iterator<Iterator> const &x)
+	{ return (random_access_iterator<Iterator>(x.base() - n)); }
+
+	/*----- Addition operator -----*/
+
+	template <class Iterator>
+	random_access_iterator<Iterator>	operator+(typename random_access_iterator<Iterator>::difference_type n, random_access_iterator<Iterator> const &x)
+	{ return (random_access_iterator<Iterator>(x.base() + n)); }
 
 	/*-------------Reverse Iterator-------------*/
 

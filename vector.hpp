@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/23 16:52:20 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/24 18:41:49 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,45 +33,37 @@ namespace ft
 			typedef std::size_t										size_type;
 			typedef ft::random_access_iterator<value_type>			iterator;
 			typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
-			typedef const reverse_iterator					const_reverse_iterator;
+			typedef const reverse_iterator							const_reverse_iterator;
 			typedef ft::random_access_iterator<const_value_type>	const_iterator;
 
 			/*-------------------------- Constructor --------------------------*/
 
-			explicit vector(const allocator_type &alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc) {
+			explicit vector(const allocator_type &alloc = allocator_type()) : _alloc(alloc), _capacity(0), _size(0) {
 				_vector = _alloc.allocate(0);
 			}
 
-			explicit vector(size_type n, const value_type &val = value_type(), const allocator_type& alloc = allocator_type()) : _size(n), _capacity(n), _alloc(alloc)
+			explicit vector(size_type n, const value_type &val = value_type(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _capacity(n), _size(n)
 			{
 				_vector = _alloc.allocate(_capacity);
 				for (size_type i = 0; i < _size; i++)
-					_alloc.construct(_vector + i, val);
+					_alloc.construct(&_vector[i], val);
 			}
 
 			template <class InputIterator>
-			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc)
+			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) : _alloc(alloc),  _capacity(0), _size(0)
 			{
-				while (first < last)
-				{
-					_size++;
-					first++;
-				}
+				_size = first;
 				_capacity = _size;
-				_vector = alloc.allocate(_capacity);
-				first -= _size;
-				for (size_type i = 0; first < last; i++)
-				{
-					_alloc.construct(_vector + i, *first);
-					first++;
-				}
+				_vector = _alloc.allocate(_capacity);
+				for (size_type i = 0; first++ < last; i++)
+					_alloc.construct(&_vector[i], last);
 			}
 
-			vector(const vector &x) : _size(x.size()), _capacity(x.capacity()), _alloc(get_allocator())
+			vector(const vector &x) : _alloc(get_allocator()), _capacity(x.capacity()), _size(x.size())
 			{
 				_vector = _alloc.allocate(_capacity);
 				for (size_type i = 0; i < _size; i++)
-					_alloc.construct(_vector + i, x[i]);
+					_alloc.construct(&_vector[i], x[i]);
 			}
 
 			/*-------------------------- Destructor ---------------------------*/
@@ -91,7 +83,8 @@ namespace ft
 				_size = x.size();
 				_vector = _alloc.allocate(_capacity);
 				for (size_type i = 0; i < _size; i++)
-					_alloc.construct(&_vector[i], v.at(i));
+					_alloc.construct(_vector + i, x[i]);
+				return (*this);
 			}
 
 			/*-------------------------- Iterators ----------------------------*/
@@ -109,7 +102,7 @@ namespace ft
 
 			size_type	size() const { return (_size); }
 
-			size_type	max_size() const { return (allocator_type::max_size()); }
+			size_type	max_size() const { return (_alloc.max_size()); }
 
 			void		resize(size_type n, value_type val = value_type())
 			{
@@ -146,8 +139,9 @@ namespace ft
 				if (n <= _capacity)
 					return ;
 				vector	tmp(*this);
-				~vector();
+				this->~vector();
 				_capacity = n;
+				_size = tmp.size();
 				_vector = _alloc.allocate(_capacity);
 				for (size_type i = 0; i < tmp.size(); i++)
 					_alloc.construct(&_vector[i], tmp[i]);
@@ -203,7 +197,7 @@ namespace ft
 			{
 				if (_size + 1 >= _capacity)
 					reserve((_capacity + 1) * 2);
-				&_vector[_size++] = val;
+				_vector[_size++] = val;
 			}
 
 			void		pop_back()
@@ -316,9 +310,9 @@ namespace ft
 
 		private:
 			allocator_type	_alloc;
-			value_type		*_vector;
-			size_type		_size;
 			size_type		_capacity;
+			size_type		_size;
+			value_type		*_vector;
 
 	};
 
