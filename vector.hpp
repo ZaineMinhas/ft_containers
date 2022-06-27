@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/24 18:41:49 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/27 18:59:33 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,7 +312,7 @@ namespace ft
 			allocator_type	_alloc;
 			size_type		_capacity;
 			size_type		_size;
-			value_type		*_vector;
+			pointer			_vector;
 
 	};
 
@@ -333,12 +333,12 @@ namespace ft
 	template <class T, class Alloc>
 	bool	operator!=(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
 	{
-		if (lhs.size() == rhs.size())
-			return (false);
+		if (lhs.size() != rhs.size())
+			return (true);
 		for (typename vector<T,Alloc>::size_type i = 0; i < lhs.size(); i++)
-			if (lhs[i] == rhs[i])
-				return (false);
-		return (true);
+			if (lhs[i] != rhs[i])
+				return (true);
+		return (false);
 	}
 
 	template <class T, class Alloc>
@@ -359,14 +359,7 @@ namespace ft
 	template <class T, class Alloc>
 	bool	operator<=(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
 	{
-		for (typename vector<T,Alloc>::size_type i = 0; i < lhs.size() && i < rhs.size(); i++)
-		{
-			if (lhs[i] <= rhs[i])
-				return (true);
-			else if (lhs[i] > rhs[i])
-				return (false);
-		}
-		if (lhs.size() <= rhs.size())
+		if (lhs < rhs || lhs == rhs)
 			return (true);
 		return (false);
 	}
@@ -389,14 +382,7 @@ namespace ft
 	template <class T, class Alloc>
 	bool	operator>=(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
 	{
-		for (typename vector<T,Alloc>::size_type i = 0; i < lhs.size() && i < rhs.size(); i++)
-		{
-			if (lhs[i] >= rhs[i])
-				return (true);
-			else if (lhs[i] < rhs[i])
-				return (false);
-		}
-		if (lhs.size() >= rhs.size())
+		if (lhs > rhs || lhs == rhs)
 			return (true);
 		return (false);
 	}
