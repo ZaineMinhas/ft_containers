@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 16:39:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/24 19:16:20 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/27 20:00:40 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ namespace ft
 				_ptr = rhs.base();
 				return (*this);
 			}
+
+			operator random_access_iterator<const T>(void) const { return (_ptr); }
 
 			/*----- Base -----*/
 

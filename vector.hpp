@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/27 18:59:33 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/28 04:40:34 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,14 @@ namespace ft
 			}
 
 			template <class InputIterator>
-			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) : _alloc(alloc),  _capacity(0), _size(0)
+			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = NULL) : _alloc(alloc),  _capacity(0), _size(0)
 			{
-				_size = first;
+				// a reparer
+				_size = (last - first);
 				_capacity = _size;
 				_vector = _alloc.allocate(_capacity);
-				for (size_type i = 0; first++ < last; i++)
-					_alloc.construct(&_vector[i], last);
+				for (size_type i = 0; first < last; i++)
+					_alloc.construct(&_vector[i], *first++);
 			}
 
 			vector(const vector &x) : _alloc(get_allocator()), _capacity(x.capacity()), _size(x.size())
@@ -109,13 +110,8 @@ namespace ft
 				if (n == _size)
 					return ;
 				else if (n < _size)
-				{
 					while (_size > n)
-					{
-						_alloc.destroy(&_vector[_size]);
-						_size--;
-					}
-				}
+						_alloc.destroy(&_vector[_size--]);
 				else
 				{
 					if (n > _capacity)
@@ -178,21 +174,23 @@ namespace ft
 			/*-------------------------- Modifiers ----------------------------*/
 
 			template <class InputIterator>
-  			void		assign(InputIterator first, InputIterator last)
+  			void		assign(InputIterator first, InputIterator last, typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 			{
-				while (first < last)
-				{
-					push_back(*first);
-					first++;
-				}
+				clear();
+				_size = (last - first);
+				if (_size > _capacity)
+					reserve(_size);
+				for (size_type i = 0; first < last; i++)
+					_alloc.construct(&_vector[i], *first++);
 			}
 
 			void		assign(size_type n, const value_type &val)
 			{
+				clear();
 				for (size_type i = 0; i < n; i++)
 					push_back(val);
 			}
-	
+
 			void		push_back(const value_type &val)
 			{
 				if (_size + 1 >= _capacity)
@@ -216,8 +214,8 @@ namespace ft
 				if (pos > _size)
 					throw (std::out_of_range("index out of range"));
 				reserve(++_size);
-				for (size_type i = 0; i < _size - 1 - pos; i++)
-					_vector[_size - i] = _vector[_size - i - 1];
+				for (size_type i = 0; i < _size - pos; i++)
+					_vector[_size - i - 1] = _vector[_size - i - 2];
 				_vector[pos] = val;
 				return (_vector + pos);
 			}
@@ -231,15 +229,15 @@ namespace ft
 				if (pos > _size)
 					throw (std::out_of_range("index out of range"));
 				_size += n;
-				reserve(_size + n);
-				for (size_type i = 0; i < _size - n - pos + 1; i++)
-					_vector[_size - i] = _vector[_size - i - 1];
+				reserve(_size * 2);
+				for (size_type i = 0; i < _size - n - pos; i++)
+					_vector[_size - i - 1] = _vector[_size - i - n - 1];
 				for (size_type i = 0; i < n; i++)
 					_vector[pos + i] = val;
 			}
 
 			template <class InputIterator>
-			void		insert(iterator position, InputIterator first, InputIterator last)
+			void		insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 			{
 				size_type	pos = 0;
 				size_type	n = last - first;
@@ -249,9 +247,9 @@ namespace ft
 				if (pos > _size)
 					throw (std::out_of_range("index out of range"));
 				_size += n;
-				reserve(_size + n);
+				reserve(_size);
 				for (size_type i = 0; i < _size - n - pos + 1; i++)
-					_vector[_size - i] = _vector[_size - i - 1];
+					_vector[_size - i - 1] = _vector[_size - i - n - 1];
 				for (size_type i = 0; i < n; i++)
 				{
 					_vector[pos + i] = *first;
@@ -271,7 +269,7 @@ namespace ft
 				for (size_type i = pos; i < _size; i++)
 					_vector[i] = _vector[i + 1];
 				_size--;
-				return (_vector + pos + 1);
+				return (_vector + pos);
 			}
 
 			iterator	erase(iterator first, iterator last)
@@ -288,7 +286,7 @@ namespace ft
 				for (size_type i = 0; i < _size - pos - n; i++)
 					_vector[pos + i] = _vector[pos + i + n];
 				_size -= n;
-				return (_vector + pos + n);
+				return (_vector + pos);
 			}
 
 			void		swap(vector &x)
