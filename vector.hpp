@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/28 04:40:34 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/30 19:59:49 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ namespace ft
 	{
 		public:
 			typedef T												value_type;
-			typedef const T											const_value_type;
 			typedef Alloc											allocator_type;
 			typedef typename allocator_type::reference				reference;
 			typedef typename allocator_type::const_reference		const_reference;
@@ -34,7 +33,7 @@ namespace ft
 			typedef ft::random_access_iterator<value_type>			iterator;
 			typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
 			typedef const reverse_iterator							const_reverse_iterator;
-			typedef ft::random_access_iterator<const_value_type>	const_iterator;
+			typedef ft::random_access_iterator<const value_type>	const_iterator;
 
 			/*-------------------------- Constructor --------------------------*/
 
@@ -52,11 +51,12 @@ namespace ft
 			template <class InputIterator>
 			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = NULL) : _alloc(alloc),  _capacity(0), _size(0)
 			{
-				// a reparer
-				_size = (last - first);
+				InputIterator tmp = first;
+				while (tmp++ != last)
+					_size++;
 				_capacity = _size;
 				_vector = _alloc.allocate(_capacity);
-				for (size_type i = 0; first < last; i++)
+				for (size_type i = 0; first != last; i++)
 					_alloc.construct(&_vector[i], *first++);
 			}
 
@@ -130,17 +130,22 @@ namespace ft
 
 			bool		empty() const { return (!_size); }
 
-			void		reserve(size_type n)
+			void	reserve(size_type n)
 			{
-				if (n <= _capacity)
+				if (n > this->max_size())
+					throw (std::out_of_range("vector: out of range"));
+				if (n <= this->_capacity)
 					return ;
-				vector	tmp(*this);
-				this->~vector();
-				_capacity = n;
-				_size = tmp.size();
-				_vector = _alloc.allocate(_capacity);
-				for (size_type i = 0; i < tmp.size(); i++)
-					_alloc.construct(&_vector[i], tmp[i]);
+
+				pointer old_vector = this->_vector;
+				this->_vector = this->_alloc.allocate(n);
+				for (size_type i = 0; i < this->_size; i++)
+					this->_alloc.construct(&this->_vector[i], old_vector[i]);
+				for	(size_type i = 0; i < this->_size; i++)
+					this->_alloc.destroy(&old_vector[i]);
+				this->_alloc.deallocate(old_vector, this->_capacity);
+				this->_capacity = n;
+
 			}
 
 			/*------------------------- Element acces -------------------------*/
@@ -177,10 +182,12 @@ namespace ft
   			void		assign(InputIterator first, InputIterator last, typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 			{
 				clear();
-				_size = (last - first);
+				InputIterator tmp = first;
+				while (tmp++ != last)
+					_size++;
 				if (_size > _capacity)
 					reserve(_size);
-				for (size_type i = 0; first < last; i++)
+				for (size_type i = 0; first != last; i++)
 					_alloc.construct(&_vector[i], *first++);
 			}
 
@@ -229,7 +236,7 @@ namespace ft
 				if (pos > _size)
 					throw (std::out_of_range("index out of range"));
 				_size += n;
-				reserve(_size * 2);
+				reserve(_size);
 				for (size_type i = 0; i < _size - n - pos; i++)
 					_vector[_size - i - 1] = _vector[_size - i - n - 1];
 				for (size_type i = 0; i < n; i++)
@@ -240,7 +247,10 @@ namespace ft
 			void		insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 			{
 				size_type	pos = 0;
-				size_type	n = last - first;
+				size_type	n = 0;
+				InputIterator tmp = first;
+				while (tmp++ != last)
+					n++;
 				for (; pos <= _size; pos++)
 					if (_vector + pos == &*position)
 						break ;
@@ -291,9 +301,20 @@ namespace ft
 
 			void		swap(vector &x)
 			{
-				vector	tmp(*this);
-				*this = x;
-				x = tmp;
+				allocator_type	alloc = x.get_allocator();
+				size_type		capacity = x.capacity();
+				size_type		size = x.size();
+				pointer			vector = x._vector;
+
+				x._alloc = _alloc;
+				x._capacity = _capacity;
+				x._size = _size;
+				x._vector = _vector;
+
+				_alloc = alloc;
+				_capacity = capacity;
+				_size = size;
+				_vector = vector;
 			}
 
 			void		clear()

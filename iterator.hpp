@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 16:39:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/27 20:00:40 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/06/30 19:45:41 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,13 @@ namespace ft
 
 			/*----- Constructors -----*/
 
-			random_access_iterator() : _ptr(NULL) {}
+			random_access_iterator(void) : _ptr(NULL) {}
 			random_access_iterator(random_access_iterator const &src) : _ptr(src.base()) {}
 			random_access_iterator(pointer ptr) : _ptr(ptr) {}
 
 			/*----- Destructor -----*/
 
-			~random_access_iterator() {}
+			~random_access_iterator(void) {}
 
 			/*----- Assignation operator -----*/
 
@@ -142,23 +142,23 @@ namespace ft
 
 	/*----- Relationals operators -----*/
 
-	template <class Iterator>
-	bool	operator==(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs)
+	template <class L_T, class R_T>
+	bool	operator==(ft::random_access_iterator<L_T> const &lhs, ft::random_access_iterator<R_T> const &rhs)
 	{ return (lhs.base() == rhs.base()); }
-	template <class Iterator>
-	bool	operator!=(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs)
+	template <class L_T, class R_T>
+	bool	operator!=(ft::random_access_iterator<L_T> const &lhs, ft::random_access_iterator<R_T> const &rhs)
 	{ return (lhs.base() != rhs.base()); }
-	template <class Iterator>
-	bool	operator<=(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs)
+	template <class L_T, class R_T>
+	bool	operator<=(ft::random_access_iterator<L_T> const &lhs, ft::random_access_iterator<R_T> const &rhs)
 	{ return (lhs.base() <= rhs.base()); }
-	template <class Iterator>
-	bool	operator>=(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs)
+	template <class L_T, class R_T>
+	bool	operator>=(ft::random_access_iterator<L_T> const &lhs, ft::random_access_iterator<R_T> const &rhs)
 	{ return (lhs.base() >= rhs.base()); }
-	template <class Iterator>
-	bool	operator<(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs)
+	template <class L_T, class R_T>
+	bool	operator<(ft::random_access_iterator<L_T> const &lhs, ft::random_access_iterator<R_T> const &rhs)
 	{ return (lhs.base() < rhs.base()); }
-	template <class Iterator>
-	bool	operator>(ft::random_access_iterator<Iterator> const &lhs, ft::random_access_iterator<Iterator> const &rhs)
+	template <class L_T, class R_T>
+	bool	operator>(ft::random_access_iterator<L_T> const &lhs, ft::random_access_iterator<R_T> const &rhs)
 	{ return (lhs.base() > rhs.base()); }
 
 	/*----- Subtraction operator -----*/
@@ -192,14 +192,14 @@ namespace ft
 
 			/*----- Constructors -----*/
 
-			reverse_iterator() : _it() {}
+			reverse_iterator(void) : _it() {}
 			reverse_iterator(iterator_type it) : _it(it) {}
 			template <class Iter>
-			reverse_iterator(const reverse_iterator<Iter> &src) : _it(src.base()) {}
+			reverse_iterator(reverse_iterator<Iter> const &src) : _it(src.base()) {}
 
 			/*----- Destructor -----*/
 
-			~reverse_iterator();
+			~reverse_iterator(void);
 
 			/*----- Base -----*/
 
@@ -285,18 +285,18 @@ namespace ft
 
 	/*----- Relational operator -----*/
 
-	template <class Iterator>
-	bool	operator==(ft::reverse_iterator<Iterator> const &lhs, ft::reverse_iterator<Iterator> const &rhs) { return (rhs.base() == lhs.base()); }
-	template <class Iterator>
-	bool	operator!=(ft::reverse_iterator<Iterator> const &lhs, ft::reverse_iterator<Iterator> const &rhs) { return (rhs.base() != lhs.base()); }
-	template <class Iterator>
-	bool	operator<=(ft::reverse_iterator<Iterator> const &lhs, ft::reverse_iterator<Iterator> const &rhs) { return (rhs.base() <= lhs.base()); }
-	template <class Iterator>
-	bool	operator>=(ft::reverse_iterator<Iterator> const &lhs, ft::reverse_iterator<Iterator> const &rhs) { return (rhs.base() >= lhs.base()); }
-	template <class Iterator>
-	bool	operator<(ft::reverse_iterator<Iterator> const &lhs, ft::reverse_iterator<Iterator> const &rhs) { return (rhs.base() < lhs.base()); }
-	template <class Iterator>
-	bool	operator>(ft::reverse_iterator<Iterator> const &lhs, ft::reverse_iterator<Iterator> const &rhs) { return (rhs.base() > lhs.base()); }
+	template <class L_I, class R_I>
+	bool	operator==(ft::reverse_iterator<L_I> const &lhs, ft::reverse_iterator<R_I> const &rhs) { return (rhs.base() == lhs.base()); }
+	template <class L_I, class R_I>
+	bool	operator!=(ft::reverse_iterator<L_I> const &lhs, ft::reverse_iterator<R_I> const &rhs) { return (rhs.base() != lhs.base()); }
+	template <class L_I, class R_I>
+	bool	operator<=(ft::reverse_iterator<L_I> const &lhs, ft::reverse_iterator<R_I> const &rhs) { return (rhs.base() <= lhs.base()); }
+	template <class L_I, class R_I>
+	bool	operator>=(ft::reverse_iterator<L_I> const &lhs, ft::reverse_iterator<R_I> const &rhs) { return (rhs.base() >= lhs.base()); }
+	template <class L_I, class R_I>
+	bool	operator<(ft::reverse_iterator<L_I> const &lhs, ft::reverse_iterator<R_I> const &rhs) { return (rhs.base() < lhs.base()); }
+	template <class L_I, class R_I>
+	bool	operator>(ft::reverse_iterator<L_I> const &lhs, ft::reverse_iterator<R_I> const &rhs) { return (rhs.base() > lhs.base()); }
 
 	/*----- Addition operator -----*/
 
