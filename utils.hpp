@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 04:57:54 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/28 00:41:39 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/04 15:22:58 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,6 @@ namespace ft
 	template<> struct is_integral<bool> : public true_type{};
 
 	template<> struct is_integral<char> : public true_type{};
-	template<> struct is_integral<char16_t> : public true_type{};
-	template<> struct is_integral<char32_t> : public true_type{};
 	template<> struct is_integral<wchar_t> : public true_type{};
 	template<> struct is_integral<signed char> : public true_type {};
 	template<> struct is_integral<unsigned char> : public true_type{};

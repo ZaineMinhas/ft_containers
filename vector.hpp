@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/30 19:59:49 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/04 19:43:15 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ namespace ft
 			typedef std::ptrdiff_t									difference_type;
 			typedef std::size_t										size_type;
 			typedef ft::random_access_iterator<value_type>			iterator;
-			typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
-			typedef const reverse_iterator							const_reverse_iterator;
 			typedef ft::random_access_iterator<const value_type>	const_iterator;
+			typedef ft::reverse_iterator<iterator>					reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 
 			/*-------------------------- Constructor --------------------------*/
 
@@ -90,14 +90,17 @@ namespace ft
 
 			/*-------------------------- Iterators ----------------------------*/
 
-			iterator				begin() { return (_vector); }
-			const_iterator			begin() const { return (_vector); }
-			iterator				end() { return (&_vector[_size]); }
-			const_iterator			end() const { return (&_vector[_size]); }
-			reverse_iterator		rbegin() { return (&_vector[_size - 1]); }
-			const_reverse_iterator	rbegin() const { return (&_vector[_size - 1]); }
-			reverse_iterator		rend() { return (_vector - 1); }
-			const_reverse_iterator	rend() const { return (_vector - 1); }
+			iterator				begin() { return (iterator(_vector)); }
+			const_iterator			begin() const { return (const_iterator(_vector)); }
+
+			iterator				end() { return (iterator(_vector + _size)); }
+			const_iterator			end() const { return (const_iterator(_vector + _size)); }
+
+			reverse_iterator		rbegin() { return (reverse_iterator(end())); }
+			const_reverse_iterator	rbegin() const { return (const_reverse_iterator(end())); }
+
+			reverse_iterator		rend() { return (reverse_iterator(begin())); }
+			const_reverse_iterator	rend() const { return (const_reverse_iterator(begin())); }
 
 			/*-------------------------- Capacity -----------------------------*/
 
@@ -275,9 +278,15 @@ namespace ft
 						break ;
 				if (pos > _size)
 					throw (std::out_of_range("index out of range"));
-				_alloc.destroy(&_vector[pos]);
-				for (size_type i = pos; i < _size; i++)
-					_vector[i] = _vector[i + 1];
+				if (pos == _size)
+					_alloc.destroy(&_vector[_size]);
+				else
+				{
+					_alloc.destroy(&_vector[pos]);
+					for (size_type i = pos; i < _size; i++)
+						if (i < _size - 1)
+							_vector[i] = _vector[i + 1];
+				}
 				_size--;
 				return (_vector + pos);
 			}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 16:39:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/06/30 19:45:41 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/04 19:55:52 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ namespace ft
 	struct bidirectional_iterator_tag {};
 	struct random_access_iterator_tag {};
 
-	template <class Category, class T, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T&>
+	template <class Category, class T, class Distance = std::ptrdiff_t, class Pointer = T*, class Reference = T&>
 	struct iterator
 	{
 		typedef T			value_type;
@@ -63,11 +63,13 @@ namespace ft
 				return (*this);
 			}
 
-			operator random_access_iterator<const T>(void) const { return (_ptr); }
-
 			/*----- Base -----*/
 
 			pointer	base(void) const { return (_ptr); }
+
+			/*----- Const operator -----*/
+
+			operator	random_access_iterator<const T>(void) const { return (_ptr); }
 
 			/*----- Dereferenced value -----*/
 
@@ -194,16 +196,21 @@ namespace ft
 
 			reverse_iterator(void) : _it() {}
 			reverse_iterator(iterator_type it) : _it(it) {}
+			reverse_iterator(pointer it) : _it(iterator_type(it)) {}
 			template <class Iter>
 			reverse_iterator(reverse_iterator<Iter> const &src) : _it(src.base()) {}
 
 			/*----- Destructor -----*/
 
-			~reverse_iterator(void);
+			~reverse_iterator(void) {}
 
 			/*----- Base -----*/
 
 			iterator_type	base(void) const { return (_it); }
+
+			/*----- Const operator -----*/
+
+			operator	reverse_iterator<const iterator_type>() const { return (_it); }
 
 			/*----- Dereference operator -----*/
 
@@ -235,7 +242,7 @@ namespace ft
 			{
 				reverse_iterator	tmp(*this);
 				--_it;
-				return (*this);
+				return (tmp);
 			}
 
 			/*----- Arithmetic += operator -----*/
@@ -264,7 +271,7 @@ namespace ft
 			{
 				reverse_iterator	tmp(*this);
 				++_it;
-				return (*this);
+				return (tmp);
 			}
 
 			/*----- Arithmetic -= operator -----*/
