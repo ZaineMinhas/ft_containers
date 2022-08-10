@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/06 01:08:39 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/09 17:33:21 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/10 16:25:19 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ struct tree
 			if (!n->left)
 			{
 				std::cout << "c'est loose" << std::endl;
+				go_root();
 				return ;
 			}
 			std::cout << "left > ";
@@ -91,6 +92,7 @@ struct tree
 			if (!n->right)
 			{
 				std::cout << "c'est loose" << std::endl;
+				go_root();
 				return ;
 			}
 			std::cout << "right > ";
@@ -99,13 +101,37 @@ struct tree
 			return ;
 		}
 		if (val == n->data)
+		{
 			std::cout << "c'est win" << std::endl;
+			go_root();
+		}
 	}
 
 	void	go_root()
 	{
 		while (n->parent)
 			n = n->parent;
+	}
+
+	void	aff_node(node<T> *nod) const
+	{
+			std::cout << nod->data << std::endl;
+	}
+
+	void	aff_tree(node<T> *nod, int space) const
+	{
+		int i;
+		if(nod)
+		{
+			space = space + 10;
+			this->aff_tree(nod->right, space);
+			std::cout << std::endl;
+			for (i = 10; i < space; i++)
+				std::cout << " ";
+			this->aff_node(nod);
+			std::cout << std::endl;
+			this->aff_tree(nod->left, space);
+		}
 	}
 };
 

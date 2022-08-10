@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/09 16:40:10 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/09 17:47:20 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/10 16:32:29 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	main()
 	t.insert(1001);
 
 	t.search(1001);
+	t.aff_tree(t.n, 0);
 	//std::cout << t.n->parent << std::endl;
 	//std::cout << t.n->right->data << std::endl;
 
