@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 04:57:54 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/10 15:54:48 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/11 19:01:11 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ namespace ft
 	/*---------- LESS ----------*/
 
 	template <class T>
-	struct less : binary_function <T,T,bool>
+	struct less : std::binary_function <T, T, bool>
 	{
 		bool	operator()(const T& x, const T& y) const { return (x < y); }
 	};

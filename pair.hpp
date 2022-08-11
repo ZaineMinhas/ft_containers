@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 15:50:50 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/10 15:57:00 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/11 19:21:15 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ namespace ft
 
 		pair() : first(first_type()), second(second_type()) {}
 		template<class U, class V>
-		pair(const pair<U,V> &pr) : first(pr.first), second(pr.second) {}
-		pair (const first_type& a, const second_type& b) : first(a), second(b) {}
+		pair(const pair<U, V> &pr) : first(pr.first), second(pr.second) {}
+		pair (const first_type &a, const second_type &b) : first(a), second(b) {}
 
 		/*----- Assignation operator -----*/
 
