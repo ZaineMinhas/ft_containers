@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/11 19:32:31 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/12 18:08:39 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ namespace ft
 				_root->left = NULL;
 				_root->right = NULL;
 				_root->color = BLACK;
+				_leaf = _root;
 			}
 
 			rb_tree(const rb_tree &tree)
@@ -79,9 +80,12 @@ namespace ft
 			void	insert(value_type val)
 			{
 				node_type	*finded = to_find(val.first);
-				if (_cmp(val.first, finded->data.first))
+
+				if (_root == _leaf)
+					_root = new_node(val, BLACK, NULL);
+				else if (_cmp(val.first, finded->data.first))
 					finded->left = new_node(val, RED, finded);
-				else if (_cmp(finded->data.first, val.first))
+				else
 					finded->right = new_node(val, RED, finded);
 			}
 
@@ -104,17 +108,36 @@ namespace ft
 			{
 				node_type	*to_find = _root;
 
+				// std::cout << to_find << std::endl;
+				// std::cout << val << " < " << to_find->data.first << " ?" << std::endl;
+				// std::cout << "plus petit : ";
+				// if (_cmp(val, to_find->data.first))
+				// 	std::cout << "OUI" << std::endl;
+				// else
+				// 	std::cout << "NON" << std::endl;
+
+
 				while (to_find)
 				{
 					if (_cmp(val, to_find->data.first))
 					{
-						to_find = to_find->left;
-						continue;
+						if (to_find->left)
+						{
+							to_find = to_find->left;
+							continue;
+						}
+						else
+							return (to_find);
 					}
-					else if (_cmp(to_find->data.first, val))
+					else
 					{
-						to_find = to_find->right;
-						continue;
+						if (to_find->right)
+						{
+							to_find = to_find->right;
+							continue;
+						}
+						else
+							return (to_find);
 					}
 				}
 				return (to_find);
@@ -122,6 +145,7 @@ namespace ft
 
 		private:
 			node_type				*_root;
+			node_type				*_leaf;
 			key_compare				_cmp;
 			allocator_type			_alloc;
 			node_allocator_type		_nalloc;
