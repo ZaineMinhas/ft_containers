@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/12 18:08:39 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/12 19:51:20 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ namespace ft
 
 			/*-------------------------- Modifiers ----------------------------*/
 
+			void	balance(void) {}
+
 			void	insert(value_type val)
 			{
 				node_type	*finded = to_find(val.first);
@@ -87,6 +89,7 @@ namespace ft
 					finded->left = new_node(val, RED, finded);
 				else
 					finded->right = new_node(val, RED, finded);
+				balance();
 			}
 
 			/*---------------------------- Utils -----------------------------*/
@@ -141,6 +144,42 @@ namespace ft
 					}
 				}
 				return (to_find);
+			}
+
+			void	rot_left(node_type *node)
+			{
+				node_type	*tmp_a = node;
+				node_type	*tmp_b = node->right->left;
+
+				node = node->right;
+				node->left = tmp_a;
+				tmp_a->right = tmp_b;
+				node->parent = tmp_a->parent;
+				tmp_a->parent = node;
+				if (tmp_b)
+					tmp_b->parent = tmp_a;
+				if (node->parent && node->parent->left == tmp_a)
+					node->parent->left = node;
+				else if (node->parent && node->parent->right == tmp_a)
+					node->parent->right = node;
+			}
+
+			void	rot_right(node_type *node)
+			{
+				node_type	*tmp_a = node;
+				node_type	*tmp_b = node->left->right;
+
+				node = node->left;
+				node->right = tmp_a;
+				tmp_a->left = tmp_b;
+				node->parent = tmp_a->parent;
+				tmp_a->parent = node;
+				if (tmp_b)
+					tmp_b->parent = tmp_a;
+				if (node->parent && node->parent->left == tmp_a)
+					node->parent->left = node;
+				else if (node->parent && node->parent->right == tmp_a)
+					node->parent->right = node;
 			}
 
 		private:
