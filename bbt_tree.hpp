@@ -6,14 +6,14 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/12 19:51:20 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/15 19:36:56 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "utils.hpp"
 # include "pair.hpp"
-# define RED false
 # define BLACK true
+# define RED false
 
 namespace ft
 {
@@ -46,7 +46,7 @@ namespace ft
 			/*-------------------------- Constructor --------------------------*/
 
 			rb_tree(const key_compare &cmp = key_compare(), const allocator_type &alloc = allocator_type(), const node_allocator_type &nalloc = node_allocator_type())
-			: _cmp(cmp), _alloc(alloc), _nalloc(nalloc)
+			: _cmp(cmp), _alloc(alloc), _nalloc(nalloc), _ll(false), _rl(false), _rr(false), _lr(false), _f(false)
 			{
 				_root = _nalloc.allocate(1);
 				_alloc.construct(&_root->data, value_type());
@@ -58,7 +58,7 @@ namespace ft
 			}
 
 			rb_tree(const rb_tree &tree)
-			: _cmp(tree.get_cmp()), _root(tree.get_root()), _alloc(tree.get_alloc()), _nalloc(tree.get_nalloc()) {}
+			: _cmp(tree.get_cmp()), _root(tree.get_root()), _alloc(tree.get_alloc()), _nalloc(tree.get_nalloc()), _ll(false), _rl(false), _rr(false), _lr(false), _f(false) {}
 
 			/*-------------------------- Destructor ---------------------------*/
 
@@ -77,19 +77,65 @@ namespace ft
 
 			/*-------------------------- Modifiers ----------------------------*/
 
-			void	balance(void) {}
+			node_type	*balance(node_type *node)
+			{
+				if (node == _root || node->parent->color == BLACK)
+					return (node);
+				if (node->parent->color == BLACK)
+					return (node);
+				node_type	*uncle = get_uncle(node);
+				if (uncle && uncle->color == RED)
+				{
+					switch_color(uncle);
+					switch_color(node->parent);
+					if (node->parent->parent != _root)
+						switch_color(node->parent->parent);
+					balance(node->parent->parent);
+				}
+				else
+				{
+					node_type	*parent = node->parent;
+					node_type	*grandpa = parent->parent;
+					if (!joestar_legacy(node, parent, grandpa))
+					{
+						if (parent->left == node)
+							rot_right(node->parent);
+						else
+							rot_left(node->parent);
+					}
+					if (grandpa->left == parent || grandpa->left == node)
+					{
+						switch_color(grandpa);
+						switch_color(grandpa->left);
+						rot_right(grandpa);
+					}
+					else
+					{
+						switch_color(grandpa);
+						switch_color(grandpa->right);
+						rot_left(grandpa);
+					}
+				}
+				return (node);
+			}
 
-			void	insert(value_type val)
+			node_type	*insert(value_type val)
 			{
 				node_type	*finded = to_find(val.first);
 
 				if (_root == _leaf)
 					_root = new_node(val, BLACK, NULL);
 				else if (_cmp(val.first, finded->data.first))
+				{
 					finded->left = new_node(val, RED, finded);
-				else
+					return (balance(finded->left));
+				}
+				else if (_cmp(finded->data.first, val.first))
+				{
 					finded->right = new_node(val, RED, finded);
-				balance();
+					return (balance(finded->right));
+				}
+				return (finded);
 			}
 
 			/*---------------------------- Utils -----------------------------*/
@@ -102,8 +148,8 @@ namespace ft
 				_alloc.construct(&node->data, val);
 				node->parent = parent;
 				node->color = color;
-				node->left = NULL;
-				node->right = NULL;
+				node->left = _leaf;
+				node->right = _leaf;
 				return (node);
 			}
 
@@ -111,20 +157,11 @@ namespace ft
 			{
 				node_type	*to_find = _root;
 
-				// std::cout << to_find << std::endl;
-				// std::cout << val << " < " << to_find->data.first << " ?" << std::endl;
-				// std::cout << "plus petit : ";
-				// if (_cmp(val, to_find->data.first))
-				// 	std::cout << "OUI" << std::endl;
-				// else
-				// 	std::cout << "NON" << std::endl;
-
-
-				while (to_find)
+				while (to_find != _leaf)
 				{
 					if (_cmp(val, to_find->data.first))
 					{
-						if (to_find->left)
+						if (to_find->left != _leaf)
 						{
 							to_find = to_find->left;
 							continue;
@@ -132,9 +169,9 @@ namespace ft
 						else
 							return (to_find);
 					}
-					else
+					else if (_cmp(to_find->data.first, val))
 					{
-						if (to_find->right)
+						if (to_find->right != _leaf)
 						{
 							to_find = to_find->right;
 							continue;
@@ -142,8 +179,27 @@ namespace ft
 						else
 							return (to_find);
 					}
+					else
+						return (to_find);
 				}
 				return (to_find);
+			}
+
+			node_type	*get_uncle(node_type *node) const
+			{
+				if (node == _root || node->parent == _root || node == NULL || node == _leaf)
+					return (NULL);
+				if (node->parent == node->parent->parent->left)
+					return (node->parent->parent->right);
+				else
+					return (node->parent->parent->left);
+			}
+
+			bool	joestar_legacy(node_type *Jotaro, node_type *Joseph, node_type *Jonathan)
+			{
+				if ((Jonathan->left == Joseph && Joseph->left == Jotaro) || (Jonathan->right == Joseph && Joseph->right == Jotaro))
+					return (true);
+				return (false);
 			}
 
 			void	rot_left(node_type *node)
@@ -182,12 +238,50 @@ namespace ft
 					node->parent->right = node;
 			}
 
+			void	switch_color(node_type *node)
+			{
+				if (!node)
+					return ;
+				if (node->color == BLACK)
+					node->color = RED;
+				else
+					node->color = BLACK;
+			}
+
+			void	aff_node(Node *node) const
+			{
+				std::string	color;
+				node->color ? color = "black" : color = "red";
+				std::cout << node->data.first << " | " << node->data.second << " | " << color << std::endl;
+			}
+
+			void	aff_tree(Node *node, int space) const
+			{
+				int i;
+				if(node != _leaf)
+				{
+					space = space + 10;
+					aff_tree(node->right, space);
+					std::cout << std::endl;
+					for (i = 10; i < space; i++)
+						std::cout << " ";
+					aff_node(node);
+					std::cout << std::endl;
+					aff_tree(node->left, space);
+				}
+			}
+
 		private:
 			node_type				*_root;
 			node_type				*_leaf;
 			key_compare				_cmp;
 			allocator_type			_alloc;
 			node_allocator_type		_nalloc;
+			bool					_ll;
+			bool					_rl;
+			bool					_rr;
+			bool					_lr;
+			bool					_f;
 	};
 	
 }

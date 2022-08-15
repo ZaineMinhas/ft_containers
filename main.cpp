@@ -9,9 +9,16 @@ int	main(void)
 	tree.insert(ft::make_pair(1, 0));
 	tree.insert(ft::make_pair(2, 2));
 	tree.insert(ft::make_pair(-2, 3));
-	tree.insert(ft::make_pair(1, 4));
+	tree.insert(ft::make_pair(10, 4));
+	tree.insert(ft::make_pair(11, 4));
+	tree.insert(ft::make_pair(12, 4));
+	tree.insert(ft::make_pair(13, 4));
+	tree.insert(ft::make_pair(11, 4));
 
-	std::cout << "ROOT = " << tree.get_root()->data.first << std::endl;
+
+	// std::cout << "ROOT = " << tree.get_root()->data.first << std::endl;
+	// tree.aff_node(tree.get_root()->right);
+	tree.aff_tree(tree.get_root(), 0);
 	return (0);
 }
 
