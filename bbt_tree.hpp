@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/15 19:36:56 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/16 14:54:25 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ namespace ft
 			/*-------------------------- Constructor --------------------------*/
 
 			rb_tree(const key_compare &cmp = key_compare(), const allocator_type &alloc = allocator_type(), const node_allocator_type &nalloc = node_allocator_type())
-			: _cmp(cmp), _alloc(alloc), _nalloc(nalloc), _ll(false), _rl(false), _rr(false), _lr(false), _f(false)
+			: _cmp(cmp), _alloc(alloc), _nalloc(nalloc)
 			{
 				_root = _nalloc.allocate(1);
 				_alloc.construct(&_root->data, value_type());
@@ -58,7 +58,7 @@ namespace ft
 			}
 
 			rb_tree(const rb_tree &tree)
-			: _cmp(tree.get_cmp()), _root(tree.get_root()), _alloc(tree.get_alloc()), _nalloc(tree.get_nalloc()), _ll(false), _rl(false), _rr(false), _lr(false), _f(false) {}
+			: _cmp(tree.get_cmp()), _root(tree.get_root()), _leaf(tree.get_leaf()), _alloc(tree.get_alloc()), _nalloc(tree.get_nalloc()) {}
 
 			/*-------------------------- Destructor ---------------------------*/
 
@@ -68,6 +68,7 @@ namespace ft
 
 			key_compare				get_cmp(void) const { return (_cmp); }
 			node_type				*get_root(void) const { return (_root); }
+			node_type				*get_leaf(void) const { return (_leaf); }
 			allocator_type			*get_alloc(void) const { return (_alloc); }
 			node_allocator_type		*get_nalloc(void) const { return (_nalloc); }
 
@@ -162,20 +163,14 @@ namespace ft
 					if (_cmp(val, to_find->data.first))
 					{
 						if (to_find->left != _leaf)
-						{
 							to_find = to_find->left;
-							continue;
-						}
 						else
 							return (to_find);
 					}
 					else if (_cmp(to_find->data.first, val))
 					{
 						if (to_find->right != _leaf)
-						{
 							to_find = to_find->right;
-							continue;
-						}
 						else
 							return (to_find);
 					}
@@ -195,7 +190,7 @@ namespace ft
 					return (node->parent->parent->left);
 			}
 
-			bool	joestar_legacy(node_type *Jotaro, node_type *Joseph, node_type *Jonathan)
+			bool	joestar_legacy(node_type *Jotaro, node_type *Joseph, node_type *Jonathan) const
 			{
 				if ((Jonathan->left == Joseph && Joseph->left == Jotaro) || (Jonathan->right == Joseph && Joseph->right == Jotaro))
 					return (true);
@@ -277,11 +272,6 @@ namespace ft
 			key_compare				_cmp;
 			allocator_type			_alloc;
 			node_allocator_type		_nalloc;
-			bool					_ll;
-			bool					_rl;
-			bool					_rr;
-			bool					_lr;
-			bool					_f;
 	};
 	
 }

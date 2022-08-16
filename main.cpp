@@ -13,6 +13,8 @@ int	main(void)
 	tree.insert(ft::make_pair(11, 4));
 	tree.insert(ft::make_pair(12, 4));
 	tree.insert(ft::make_pair(13, 4));
+	tree.insert(ft::make_pair(-3, 4));
+	tree.insert(ft::make_pair(-4, 4));
 	tree.insert(ft::make_pair(11, 4));
 
 
