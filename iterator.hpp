@@ -6,13 +6,14 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 16:39:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/05 17:49:27 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/16 17:16:49 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ITERATOR_HPP
 # define ITERATOR_HPP
 
+# include "red_black_tree.hpp"
 # include "utils.hpp"
 
 namespace ft
@@ -33,7 +34,7 @@ namespace ft
 		typedef Category	iterator_category;
 	};
 
-	/*-------------Random Access Iterator-------------*/
+	/*-------------RANDOM ACCESS ITERATOR-------------*/
 
 	template <class T>
 	class random_access_iterator : public ft::iterator<ft::random_access_iterator_tag, T>
@@ -179,7 +180,7 @@ namespace ft
 	random_access_iterator<Iterator>	operator+(typename random_access_iterator<Iterator>::difference_type n, random_access_iterator<Iterator> const &x)
 	{ return (random_access_iterator<Iterator>(x.base() + n)); }
 
-	/*-------------Reverse Iterator-------------*/
+	/*-------------REVERSE ITERATOR-------------*/
 
 	template <class Iterator>
 	class reverse_iterator
@@ -317,6 +318,24 @@ namespace ft
 
 	template<typename _IteratorL, typename _IteratorR>
 	typename reverse_iterator<_IteratorL>::difference_type	operator-(const reverse_iterator<_IteratorL> &rhs, const reverse_iterator<_IteratorR> &lhs) { return lhs.base() - rhs.base(); }
+
+	/*-------------TREE ITERATOR-------------*/
+
+	template<class node>
+	class tree_iterator
+	{
+		
+	};
+
+	/*----- Constructors -----*/
+	/*----- Destructor -----*/
+	/*----- Const operator -----*/
+	/*----- Dereferenced value -----*/
+	/*----- Pre increment operator -----*/
+	/*----- Post increment operator -----*/
+	/*----- Pre decrement operator -----*/
+	/*----- Post decrement operator -----*/
+	
 }
 
 #endif

@@ -1,15 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bbt_tree.hpp                                       :+:      :+:    :+:   */
+/*   red_black_tree.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/16 14:58:48 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/16 17:16:45 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef RED_BLACK_TREE_HPP
+# define RED_BLACK_TREE_HPP
+
+# include "iterator.hpp"
 # include "utils.hpp"
 # include "pair.hpp"
 # define BLACK true
@@ -86,8 +90,8 @@ namespace ft
 				_alloc.construct(&node->data, val);
 				node->parent = parent;
 				node->color = color;
-				node->left = _leaf;
-				node->right = _leaf;
+				node->left = NULL;
+				node->right = NULL;
 				return (node);
 			}
 
@@ -103,10 +107,10 @@ namespace ft
 				tmp_a->parent = node;
 				if (tmp_b)
 					tmp_b->parent = tmp_a;
-				if (node->parent && node->parent->left == tmp_a)
-					node->parent->left = node;
-				else if (node->parent && node->parent->right == tmp_a)
+				if (node->parent)
 					node->parent->right = node;
+				else
+					_root = node;
 			}
 
 			void	rot_right(node_type *node)
@@ -121,10 +125,10 @@ namespace ft
 				tmp_a->parent = node;
 				if (tmp_b)
 					tmp_b->parent = tmp_a;
-				if (node->parent && node->parent->left == tmp_a)
+				if (node->parent)
 					node->parent->left = node;
-				else if (node->parent && node->parent->right == tmp_a)
-					node->parent->right = node;
+				else
+					_root = node;
 			}
 
 			void	switch_color(node_type *node)
@@ -204,18 +208,18 @@ namespace ft
 			{
 				node_type	*to_find = _root;
 
-				while (to_find != _leaf)
+				while (to_find)
 				{
 					if (_cmp(val, to_find->data.first))
 					{
-						if (to_find->left != _leaf)
+						if (to_find->left)
 							to_find = to_find->left;
 						else
 							return (to_find);
 					}
 					else if (_cmp(to_find->data.first, val))
 					{
-						if (to_find->right != _leaf)
+						if (to_find->right)
 							to_find = to_find->right;
 						else
 							return (to_find);
@@ -223,12 +227,13 @@ namespace ft
 					else
 						return (to_find);
 				}
+				// std::cout << "NOUS" << std::endl;
 				return (to_find);
 			}
 
 			node_type	*get_uncle(node_type *node) const
 			{
-				if (node == _root || node->parent == _root || node == NULL || node == _leaf)
+				if (node == _root || node->parent == _root || !node)
 					return (NULL);
 				if (node->parent == node->parent->parent->left)
 					return (node->parent->parent->right);
@@ -245,6 +250,11 @@ namespace ft
 
 			void	aff_node(Node *node) const
 			{
+				if (!node)
+				{
+					std::cout << "(null)" <<std::endl;
+					return ;
+				}
 				std::string	color;
 				node->color ? color = "black" : color = "red";
 				std::cout << node->data.first << " | " << node->data.second << " | " << color << std::endl;
@@ -253,7 +263,7 @@ namespace ft
 			void	aff_tree(Node *node, int space) const
 			{
 				int i;
-				if(node != _leaf)
+				if(node)
 				{
 					space = space + 10;
 					aff_tree(node->right, space);
@@ -275,3 +285,5 @@ namespace ft
 	};
 	
 }
+
+#endif
