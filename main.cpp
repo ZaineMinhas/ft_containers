@@ -15,8 +15,8 @@ int	main(void)
 	tree.insert(ft::make_pair(5, 4));
 	std::cout << "----------------------------------------------------------------------------------------" << std::endl;
 	tree.insert(ft::make_pair(25, 4));
-	// tree.insert(ft::make_pair(17, 4));
-	// tree.insert(ft::make_pair(40, 4));
+	tree.insert(ft::make_pair(17, 4));
+	tree.insert(ft::make_pair(40, 4));
 
 
 	// std::cout << "ROOT = " << tree.get_root()->data.first << std::endl;

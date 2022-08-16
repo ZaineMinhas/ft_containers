@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 16:39:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/16 17:16:49 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/16 20:29:57 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,20 +321,59 @@ namespace ft
 
 	/*-------------TREE ITERATOR-------------*/
 
-	template<class node>
-	class tree_iterator
-	{
-		
-	};
+	// template<class node>
+	// class tree_iterator
+	// {
+	// 	public:
+	// 		typedef	node		node_type;
+	// 		typedef node*		pointer;
+	// 		typedef	node&		reference;
+	// 		typedef ptrdiff_t	difference_type;
 
-	/*----- Constructors -----*/
-	/*----- Destructor -----*/
-	/*----- Const operator -----*/
-	/*----- Dereferenced value -----*/
-	/*----- Pre increment operator -----*/
-	/*----- Post increment operator -----*/
-	/*----- Pre decrement operator -----*/
-	/*----- Post decrement operator -----*/
+	// 	/*----- Constructors -----*/
+
+	// 	tree_iterator(void) : _node(NULL), _leaf(NULL), _node->left(NULL), _node->right(NULL), _node->parent(NULL) {}
+	// 	tree_iterator(pointer node, pointer leaf) : _node(node), _leaf(leaf) {}
+	// 	tree_iterator(const tree_iterator<node_type> &it) : _node(it.get_node()), _leaf(it.get_leaf()) {}
+
+	// 	/*----- Destructor -----*/
+
+	// 	~tree_iterator(void) {}
+
+	// 	/*----- Const operator -----*/
+
+	// 	operator	tree_iterator<const node>(void) const { return (_node); }
+
+	// 	/*----- Getters -----*/
+
+	// 	pointer		get_node(void) const { return (_node); }
+	// 	pointer		get_leaf(void) const { return (_leaf); }
+
+	// 	/*----- Dereferenced value -----*/
+
+		
+
+	// 	/*----- Pre increment operator -----*/
+
+		
+
+	// 	/*----- Post increment operator -----*/
+
+		
+
+	// 	/*----- Pre decrement operator -----*/
+
+		
+
+	// 	/*----- Post decrement operator -----*/
+
+		
+
+	// 	private:
+	// 		pointer	_node;
+	// 		pointer	_leaf;
+	// };
+
 	
 }
 
