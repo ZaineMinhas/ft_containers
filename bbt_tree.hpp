@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/16 14:54:25 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/16 14:58:48 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,65 @@ namespace ft
 
 			/*-------------------------- Modifiers ----------------------------*/
 
+			node_type	*new_node(value_type val, bool color, node_type *parent)
+			{
+				node_type	*node;
+
+				node = _nalloc.allocate(1);
+				_alloc.construct(&node->data, val);
+				node->parent = parent;
+				node->color = color;
+				node->left = _leaf;
+				node->right = _leaf;
+				return (node);
+			}
+
+			void	rot_left(node_type *node)
+			{
+				node_type	*tmp_a = node;
+				node_type	*tmp_b = node->right->left;
+
+				node = node->right;
+				node->left = tmp_a;
+				tmp_a->right = tmp_b;
+				node->parent = tmp_a->parent;
+				tmp_a->parent = node;
+				if (tmp_b)
+					tmp_b->parent = tmp_a;
+				if (node->parent && node->parent->left == tmp_a)
+					node->parent->left = node;
+				else if (node->parent && node->parent->right == tmp_a)
+					node->parent->right = node;
+			}
+
+			void	rot_right(node_type *node)
+			{
+				node_type	*tmp_a = node;
+				node_type	*tmp_b = node->left->right;
+
+				node = node->left;
+				node->right = tmp_a;
+				tmp_a->left = tmp_b;
+				node->parent = tmp_a->parent;
+				tmp_a->parent = node;
+				if (tmp_b)
+					tmp_b->parent = tmp_a;
+				if (node->parent && node->parent->left == tmp_a)
+					node->parent->left = node;
+				else if (node->parent && node->parent->right == tmp_a)
+					node->parent->right = node;
+			}
+
+			void	switch_color(node_type *node)
+			{
+				if (!node)
+					return ;
+				if (node->color == BLACK)
+					node->color = RED;
+				else
+					node->color = BLACK;
+			}
+
 			node_type	*balance(node_type *node)
 			{
 				if (node == _root || node->parent->color == BLACK)
@@ -141,19 +200,6 @@ namespace ft
 
 			/*---------------------------- Utils -----------------------------*/
 
-			node_type	*new_node(value_type val, bool color, node_type *parent)
-			{
-				node_type	*node;
-
-				node = _nalloc.allocate(1);
-				_alloc.construct(&node->data, val);
-				node->parent = parent;
-				node->color = color;
-				node->left = _leaf;
-				node->right = _leaf;
-				return (node);
-			}
-
 			node_type	*to_find(const key_type &val) const
 			{
 				node_type	*to_find = _root;
@@ -195,52 +241,6 @@ namespace ft
 				if ((Jonathan->left == Joseph && Joseph->left == Jotaro) || (Jonathan->right == Joseph && Joseph->right == Jotaro))
 					return (true);
 				return (false);
-			}
-
-			void	rot_left(node_type *node)
-			{
-				node_type	*tmp_a = node;
-				node_type	*tmp_b = node->right->left;
-
-				node = node->right;
-				node->left = tmp_a;
-				tmp_a->right = tmp_b;
-				node->parent = tmp_a->parent;
-				tmp_a->parent = node;
-				if (tmp_b)
-					tmp_b->parent = tmp_a;
-				if (node->parent && node->parent->left == tmp_a)
-					node->parent->left = node;
-				else if (node->parent && node->parent->right == tmp_a)
-					node->parent->right = node;
-			}
-
-			void	rot_right(node_type *node)
-			{
-				node_type	*tmp_a = node;
-				node_type	*tmp_b = node->left->right;
-
-				node = node->left;
-				node->right = tmp_a;
-				tmp_a->left = tmp_b;
-				node->parent = tmp_a->parent;
-				tmp_a->parent = node;
-				if (tmp_b)
-					tmp_b->parent = tmp_a;
-				if (node->parent && node->parent->left == tmp_a)
-					node->parent->left = node;
-				else if (node->parent && node->parent->right == tmp_a)
-					node->parent->right = node;
-			}
-
-			void	switch_color(node_type *node)
-			{
-				if (!node)
-					return ;
-				if (node->color == BLACK)
-					node->color = RED;
-				else
-					node->color = BLACK;
 			}
 
 			void	aff_node(Node *node) const
