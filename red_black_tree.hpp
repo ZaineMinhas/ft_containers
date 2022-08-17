@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/16 20:30:39 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/17 17:22:14 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,21 @@ namespace ft
 				return (node);
 			}
 
+			void	destroy_node(node_type *node)
+			{
+				if (node != _root)
+				{
+					if (node == node->parent->left)
+						node->parent->left = NULL;
+					else
+						node->parent->right = NULL;
+				}
+				else
+					_root = _leaf;
+				_alloc.destroy(&node->data);
+				_nalloc.deallocate(node, 1);
+			}
+
 			void	rot_left(node_type *node)
 			{
 				node_type	*tmp_a = node;
@@ -144,6 +159,8 @@ namespace ft
 					node->color = BLACK;
 			}
 
+			/*-------------------------- Insert ----------------------------*/
+
 			node_type	*insert(value_type val)
 			{
 				node_type	*finded = to_find(val.first);
@@ -161,6 +178,57 @@ namespace ft
 					return (balance(finded->right));
 				}
 				return (finded);
+			}
+
+			/*-------------------------- Delete ----------------------------*/
+
+			node_type	*del_node(value_type val)
+			{
+				node_type	*db = to_find(val.first);
+				if (db->data.first != val.first || db->data.second != val.second)
+					return (db);
+				if (!db->left && !db->right)
+				{
+					if (db->color == RED || db == _root)
+						destroy_node(db);
+					else
+					{
+						db->double_black = true;
+						del_balance(db);
+					}
+				}
+				else
+				{
+					node_type	*tmp = !db->left ? minimum(db->right) : maximum(db->left);
+					if (tmp->left || tmp->right)
+					{
+						if (tmp->left)
+						{
+							tmp->color = BLACK;
+							tmp->left->parent = tmp->parent;
+							tmp == tmp->parent->left ? tmp->parent->left = tmp->left : tmp->parent->right = tmp->left;
+						}
+						else
+						{
+							tmp->color = BLACK;
+							tmp->right->parent = tmp->parent;
+							tmp == tmp->parent->left ? tmp->parent->left = tmp->right : tmp->parent->right = tmp->right;
+						}
+						copy_node(db, tmp);
+					}
+					else
+					{
+						if (tmp->color == RED)
+							copy_node(db, tmp);
+						else
+						{
+							tmp->double_black = true;
+							copy_node(db, tmp);
+							del_balance(tmp);
+						}
+					}
+				}
+				return (db);
 			}
 
 			/*--------------------------- Balance ----------------------------*/
@@ -208,7 +276,7 @@ namespace ft
 			node_type	*del_balance(node_type *db)
 			{
 				if (db == _root)
-					return (db);		// Maybe swap color to black
+					return (db);
 				node_type	*sibling = get_sibling(db);
 				if (sibling->color == RED)
 				{
@@ -220,14 +288,15 @@ namespace ft
 				else
 				{
 					node_type	*far_schild = get_far_schild(db);
-					if (far_schild->color == RED)
+					if (far_schild && far_schild->color == RED)
 					{
+						std::cout << "SALUT" << std::endl;
 						sibling->color = db->parent;
 						db->parent->color = BLACK;
 						db == db->parent->left ? rot_left(db->parent) : rot_right(db->parent);
 						if (db->double_black)
 						{
-							db == db->parent->left ? db->parent->left = _null_node : db->parent->right = _null_node;
+							db == db->parent->left ? db->parent->left = NULL : db->parent->right = NULL;
 							_alloc.destroy(&db->data);
 							_nalloc.deallocate(db, 1);
 						}
@@ -236,7 +305,7 @@ namespace ft
 					else
 					{
 						node_type	*near_schild = get_near_schild(db);
-						if (near_schild == RED)
+						if (near_schild && near_schild->color == RED)
 						{
 							sibling->color = RED;
 							near_schild->color = BLACK;
@@ -248,7 +317,7 @@ namespace ft
 							node_type	*tmp_parent = db->parent;
 							if (db->double_black)
 							{
-								db == db->parent->left ? db->parent->left = _null_node : db->parent->right = _null_node;
+								db == db->parent->left ? db->parent->left = NULL : db->parent->right = NULL;
 								_alloc.destroy(&db->data);
 								_nalloc.deallocate(db, 1);
 							}
@@ -289,6 +358,26 @@ namespace ft
 			return (to_find);
 		}
 
+		void	copy_node(node_type *a, node_type *b)
+		{
+			node_type	*tmp_p = b->parent;
+			node_type	*tmp_l = b->left;
+			node_type	*tmp_r = b->right;
+
+			if (a != _root)
+				a->parent->left == a ? a->parent->left = b : a->parent->right = b;
+			else
+				_root = b;
+			b->parent = a->parent;
+			b->left = a->left;
+			b->right = a->right;
+			b->left->parent = b;
+			b->right->parent = b;
+			b->color = a->color;
+			b->double_black = a->double_black;
+			tmp_p->right == b ? tmp_p->right = tmp_l : tmp_p->left = tmp_r;
+		}
+
 		node_type	*get_uncle(node_type *node) const
 		{
 			if (node == _root || node->parent == _root || !node)
@@ -306,14 +395,14 @@ namespace ft
 			return (node->parent->right);
 		}
 
-		node_type	*get_far_schild(node_type *node)
+		node_type	*get_far_schild(node_type *node) const
 		{
 			if (node == node->parent->right)
 				return (node->parent->left->left);
 			return (node->parent->right->right);
 		}
 
-		node_type	*get_near_schild(node_type *node)
+		node_type	*get_near_schild(node_type *node) const
 		{
 			if (node == node->parent->right)
 				return (node->parent->left->right);
@@ -325,6 +414,20 @@ namespace ft
 			if ((Jonathan->left == Joseph && Joseph->left == Jotaro) || (Jonathan->right == Joseph && Joseph->right == Jotaro))
 				return (true);
 			return (false);
+		}
+
+		node_type	*minimum(node_type* x) const
+		{
+			while (x->left)
+				x = x->left;
+			return (x);
+		}
+
+		node_type*	maximum(node_type* x) const
+		{
+			while (x->right)
+				x = x->right;
+			return (x);
 		}
 
 		void	aff_node(node_type *node) const
