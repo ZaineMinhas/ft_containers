@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 16:39:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/16 20:29:57 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/17 18:46:04 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,60 +321,128 @@ namespace ft
 
 	/*-------------TREE ITERATOR-------------*/
 
-	// template<class node>
-	// class tree_iterator
-	// {
-	// 	public:
-	// 		typedef	node		node_type;
-	// 		typedef node*		pointer;
-	// 		typedef	node&		reference;
-	// 		typedef ptrdiff_t	difference_type;
+	template<class T, class node>
+	class tree_iterator
+	{
+		public:
+			typedef T			value_type;
+			typedef	node		node_type;
+			typedef node*		pointer;
+			typedef	node&		reference;
+			typedef ptrdiff_t	difference_type;
 
-	// 	/*----- Constructors -----*/
+		/*----- Constructors -----*/
 
-	// 	tree_iterator(void) : _node(NULL), _leaf(NULL), _node->left(NULL), _node->right(NULL), _node->parent(NULL) {}
-	// 	tree_iterator(pointer node, pointer leaf) : _node(node), _leaf(leaf) {}
-	// 	tree_iterator(const tree_iterator<node_type> &it) : _node(it.get_node()), _leaf(it.get_leaf()) {}
+		tree_iterator(void) : _node(NULL), _leaf(NULL) {}
+		tree_iterator(pointer nod, pointer leaf) : _node(nod), _leaf(leaf) {}
+		tree_iterator(const tree_iterator<value_type, node_type> &it) : _node(it.get_node()), _leaf(it.get_leaf()) {}
 
-	// 	/*----- Destructor -----*/
+		/*----- Destructor -----*/
 
-	// 	~tree_iterator(void) {}
+		~tree_iterator(void) {}
 
-	// 	/*----- Const operator -----*/
+		/*----- Assignation operator -----*/
 
-	// 	operator	tree_iterator<const node>(void) const { return (_node); }
+		tree_iterator	&operator=(const tree_iterator &it)
+		{
+			if (_node != it.get_node())
+				_node = it.get_node();
+			if (_leaf != it.get_leaf())
+				_leaf = it.get_leaf();
+			return (*this);
+		}
 
-	// 	/*----- Getters -----*/
+		/*----- Const operator -----*/
 
-	// 	pointer		get_node(void) const { return (_node); }
-	// 	pointer		get_leaf(void) const { return (_leaf); }
+		operator	tree_iterator<const value_type, node>(void) const { return (_node); }
 
-	// 	/*----- Dereferenced value -----*/
+		/*----- Getters -----*/
 
+		pointer		get_node(void) const { return (_node); }
+		pointer		get_leaf(void) const { return (_leaf); }
+
+		/*----- Dereferenced value -----*/
+
+		value_type	&operator*(void) { return (_node->data); }
+		value_type	*operator->(void) { return (&_node->data); }
+
+		/*----- Pre increment operator -----*/
+
+		tree_iterator	&operator++(void)
+		{
+			_node = next(_node);
+			return (*this);
+		}
+
+		/*----- Post increment operator -----*/
+
+		tree_iterator	operator++(int)
+		{
+			pointer	tmp = _node;
+			_node = next(_node);
+			return (tree_iterator(tmp, _leaf));
+		}
+
+		/*----- Pre decrement operator -----*/
+
+		tree_iterator	&operator--(void)
+		{
+			_node = prev(_node);
+			return (*this);
+		}
 		
+		/*----- Post decrement operator -----*/
 
-	// 	/*----- Pre increment operator -----*/
+		tree_iterator	operator--(int)
+		{
+			pointer	tmp = _node;
+			_node = prev(_node);
+			return (tree_iterator(tmp, _leaf));
+		}
 
-		
+		/*----- Utils -----*/
 
-	// 	/*----- Post increment operator -----*/
+		node_type	*next(node_type &nod)
+		{
+			node_type	*tmp;
 
-		
+			if (nod->right)
+			{
+				tmp = nod;
+				while (tmp->parent && tmp == tmp->parent->right)
+					tmp = tmp->parent;
+				tmp = tmp->parent;
+				return (tmp);
+			}
+			tmp = nod->right;
+			while (tmp->left)
+				tmp->left;
+			return (tmp);
+		}
 
-	// 	/*----- Pre decrement operator -----*/
+		node_type	*prev(node_type &nod)
+		{
+			node_type	*tmp;
 
-		
+			if (nod->left)
+			{
+				tmp = nod;
+				while (tmp->parent && tmp == tmp->parent->left)
+					tmp = tmp->parent;
+				tmp = tmp->parent;
+				return (tmp);
+			}
+			tmp = nod->left;
+			while (tmp->right)
+				tmp = tmp->right;
+			return (tmp);
+		}
 
-	// 	/*----- Post decrement operator -----*/
+		private:
+			pointer	_node;
+			pointer	_leaf;
+	};
 
-		
-
-	// 	private:
-	// 		pointer	_node;
-	// 		pointer	_leaf;
-	// };
-
-	
 }
 
 #endif
