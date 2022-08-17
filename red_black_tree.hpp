@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/17 17:27:06 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/17 19:01:09 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "iterator.hpp"
 # include "utils.hpp"
 # include "pair.hpp"
+
 # define BLACK true
 # define RED false
 
@@ -80,7 +81,116 @@ namespace ft
 
 			/*-------------------------- Iterators ----------------------------*/
 
-			// a faire
+			// a faire (peut etre pas ici)
+
+			/*-------------------------- Insert ----------------------------*/
+
+			node_type	*insert(value_type val)
+			{
+				node_type	*finded = to_find(val.first);
+
+				if (_root == _leaf)
+					_root = new_node(val, BLACK, NULL);
+				else if (_cmp(val.first, finded->data.first))
+				{
+					finded->left = new_node(val, RED, finded);
+					return (balance(finded->left));
+				}
+				else if (_cmp(finded->data.first, val.first))
+				{
+					finded->right = new_node(val, RED, finded);
+					return (balance(finded->right));
+				}
+				return (finded);
+			}
+
+			/*-------------------------- Delete ----------------------------*/
+
+			node_type	*del_node(value_type val)
+			{
+				node_type	*db = to_find(val.first);
+				if (db->data.first != val.first || db->data.second != val.second)
+					return (db);
+				if (!db->left && !db->right)
+				{
+					if (db->color == RED || db == _root)
+						destroy_node(db);
+					else
+					{
+						db->double_black = true;
+						del_balance(db);
+					}
+				}
+				else
+				{
+					node_type	*tmp = !db->left ? minimum(db->right) : maximum(db->left);
+					if (tmp->left || tmp->right)
+					{
+						if (tmp->left)
+						{
+							tmp->color = BLACK;
+							tmp->left->parent = tmp->parent;
+							tmp == tmp->parent->left ? tmp->parent->left = tmp->left : tmp->parent->right = tmp->left;
+						}
+						else
+						{
+							tmp->color = BLACK;
+							tmp->right->parent = tmp->parent;
+							tmp == tmp->parent->left ? tmp->parent->left = tmp->right : tmp->parent->right = tmp->right;
+						}
+						copy_node(db, tmp);
+					}
+					else
+					{
+						if (tmp->color == RED)
+							copy_node(db, tmp);
+						else
+						{
+							tmp->double_black = true;
+							copy_node(db, tmp);
+							del_balance(tmp);
+						}
+					}
+				}
+				return (db);
+			}
+
+			/*-------------------------- Aff Tree ----------------------------*/
+
+			void	aff_node(node_type *node) const
+			{
+				if (!node)
+				{
+					std::cout << "(null)" <<std::endl;
+					return ;
+				}
+				std::string	color;
+				node->color ? color = "black" : color = "red";
+				std::cout << node->data.first << " | " << node->data.second << " | " << color << std::endl;
+			}
+
+			void	aff_tree(node_type *node, int space) const
+			{
+				int i;
+				if(node)
+				{
+					space = space + 10;
+					aff_tree(node->right, space);
+					std::cout << std::endl;
+					for (i = 10; i < space; i++)
+						std::cout << " ";
+					aff_node(node);
+					std::cout << std::endl;
+					aff_tree(node->left, space);
+				}
+			}
+
+		private:
+			node_type				*_root;
+			node_type				*_leaf;
+			key_compare				_cmp;
+			allocator_type			_alloc;
+			node_allocator_type		_nalloc;
 
 			/*-------------------------- Modifiers ----------------------------*/
 
@@ -157,78 +267,6 @@ namespace ft
 					node->color = RED;
 				else
 					node->color = BLACK;
-			}
-
-			/*-------------------------- Insert ----------------------------*/
-
-			node_type	*insert(value_type val)
-			{
-				node_type	*finded = to_find(val.first);
-
-				if (_root == _leaf)
-					_root = new_node(val, BLACK, NULL);
-				else if (_cmp(val.first, finded->data.first))
-				{
-					finded->left = new_node(val, RED, finded);
-					return (balance(finded->left));
-				}
-				else if (_cmp(finded->data.first, val.first))
-				{
-					finded->right = new_node(val, RED, finded);
-					return (balance(finded->right));
-				}
-				return (finded);
-			}
-
-			/*-------------------------- Delete ----------------------------*/
-
-			node_type	*del_node(value_type val)
-			{
-				node_type	*db = to_find(val.first);
-				if (db->data.first != val.first || db->data.second != val.second)
-					return (db);
-				if (!db->left && !db->right)
-				{
-					if (db->color == RED || db == _root)
-						destroy_node(db);
-					else
-					{
-						db->double_black = true;
-						del_balance(db);
-					}
-				}
-				else
-				{
-					node_type	*tmp = !db->left ? minimum(db->right) : maximum(db->left);
-					if (tmp->left || tmp->right)
-					{
-						if (tmp->left)
-						{
-							tmp->color = BLACK;
-							tmp->left->parent = tmp->parent;
-							tmp == tmp->parent->left ? tmp->parent->left = tmp->left : tmp->parent->right = tmp->left;
-						}
-						else
-						{
-							tmp->color = BLACK;
-							tmp->right->parent = tmp->parent;
-							tmp == tmp->parent->left ? tmp->parent->left = tmp->right : tmp->parent->right = tmp->right;
-						}
-						copy_node(db, tmp);
-					}
-					else
-					{
-						if (tmp->color == RED)
-							copy_node(db, tmp);
-						else
-						{
-							tmp->double_black = true;
-							copy_node(db, tmp);
-							del_balance(tmp);
-						}
-					}
-				}
-				return (db);
 			}
 
 			/*--------------------------- Balance ----------------------------*/
@@ -329,143 +367,106 @@ namespace ft
 						}
 					}
 				}
-			return (db);
-		}
+				return (db);
+			}
 
-		/*---------------------------- Utils -----------------------------*/
+			/*---------------------------- Utils -----------------------------*/
 
-		node_type	*to_find(const key_type &val) const
-		{
-			node_type	*to_find = _root;
-
-			while (to_find)
+			node_type	*to_find(const key_type &val) const
 			{
-				if (_cmp(val, to_find->data.first))
+				node_type	*to_find = _root;
+
+				while (to_find)
 				{
-					if (!to_find->left)
+					if (_cmp(val, to_find->data.first))
+					{
+						if (!to_find->left)
+							return (to_find);
+						to_find = to_find->left;
+					}
+					else if (_cmp(to_find->data.first, val))
+					{
+						if (!to_find->right)
+							return (to_find);
+						to_find = to_find->right;
+					}
+					else
 						return (to_find);
-					to_find = to_find->left;
 				}
-				else if (_cmp(to_find->data.first, val))
-				{
-					if (!to_find->right)
-						return (to_find);
-					to_find = to_find->right;
-				}
+				return (to_find);
+			}
+
+			node_type	*get_uncle(node_type *node) const
+			{
+				if (node == _root || node->parent == _root || !node)
+					return (NULL);
+				if (node->parent == node->parent->parent->left)
+					return (node->parent->parent->right);
 				else
-					return (to_find);
+					return (node->parent->parent->left);
 			}
-			return (to_find);
-		}
 
-		void	copy_node(node_type *a, node_type *b)
-		{
-			node_type	*tmp_p = b->parent;
-			node_type	*tmp_l = b->left;
-			node_type	*tmp_r = b->right;
-
-			if (a != _root)
-				a->parent->left == a ? a->parent->left = b : a->parent->right = b;
-			else
-				_root = b;
-			b->parent = a->parent;
-			b->left = a->left;
-			b->right = a->right;
-			b->left->parent = b;
-			b->right->parent = b;
-			b->color = a->color;
-			b->double_black = a->double_black;
-			tmp_p->right == b ? tmp_p->right = tmp_l : tmp_p->left = tmp_r;
-		}
-
-		node_type	*get_uncle(node_type *node) const
-		{
-			if (node == _root || node->parent == _root || !node)
-				return (NULL);
-			if (node->parent == node->parent->parent->left)
-				return (node->parent->parent->right);
-			else
-				return (node->parent->parent->left);
-		}
-
-		node_type	*get_sibling(node_type *node) const
-		{
-			if (node == node->parent->right)
-				return (node->parent->left);
-			return (node->parent->right);
-		}
-
-		node_type	*get_far_schild(node_type *node) const
-		{
-			if (node == node->parent->right)
-				return (node->parent->left->left);
-			return (node->parent->right->right);
-		}
-
-		node_type	*get_near_schild(node_type *node) const
-		{
-			if (node == node->parent->right)
-				return (node->parent->left->right);
-			return (node->parent->right->left);
-		}
-
-		bool	joestar_legacy(node_type *Jotaro, node_type *Joseph, node_type *Jonathan) const
-		{
-			if ((Jonathan->left == Joseph && Joseph->left == Jotaro) || (Jonathan->right == Joseph && Joseph->right == Jotaro))
-				return (true);
-			return (false);
-		}
-
-		node_type	*minimum(node_type* x) const
-		{
-			while (x->left)
-				x = x->left;
-			return (x);
-		}
-
-		node_type*	maximum(node_type* x) const
-		{
-			while (x->right)
-				x = x->right;
-			return (x);
-		}
-
-		/*-------------------------- Aff Tree ----------------------------*/
-
-		void	aff_node(node_type *node) const
-		{
-			if (!node)
+			node_type	*get_sibling(node_type *node) const
 			{
-				std::cout << "(null)" <<std::endl;
-				return ;
+				if (node == node->parent->right)
+					return (node->parent->left);
+				return (node->parent->right);
 			}
-			std::string	color;
-			node->color ? color = "black" : color = "red";
-			std::cout << node->data.first << " | " << node->data.second << " | " << color << std::endl;
-		}
 
-		void	aff_tree(node_type *node, int space) const
-		{
-			int i;
-			if(node)
+			node_type	*get_far_schild(node_type *node) const
 			{
-				space = space + 10;
-				aff_tree(node->right, space);
-				std::cout << std::endl;
-				for (i = 10; i < space; i++)
-					std::cout << " ";
-				aff_node(node);
-				std::cout << std::endl;
-				aff_tree(node->left, space);
+				if (node == node->parent->right)
+					return (node->parent->left->left);
+				return (node->parent->right->right);
 			}
-		}
 
-		private:
-			node_type				*_root;
-			node_type				*_leaf;
-			key_compare				_cmp;
-			allocator_type			_alloc;
-			node_allocator_type		_nalloc;
+			node_type	*get_near_schild(node_type *node) const
+			{
+				if (node == node->parent->right)
+					return (node->parent->left->right);
+				return (node->parent->right->left);
+			}
+
+			node_type	*minimum(node_type* x) const
+			{
+				while (x->left)
+					x = x->left;
+				return (x);
+			}
+
+			node_type*	maximum(node_type* x) const
+			{
+				while (x->right)
+					x = x->right;
+				return (x);
+			}
+
+			void	copy_node(node_type *a, node_type *b)
+			{
+				node_type	*tmp_p = b->parent;
+				node_type	*tmp_l = b->left;
+				node_type	*tmp_r = b->right;
+
+				if (a != _root)
+					a->parent->left == a ? a->parent->left = b : a->parent->right = b;
+				else
+					_root = b;
+				b->parent = a->parent;
+				b->left = a->left;
+				b->right = a->right;
+				b->left->parent = b;
+				b->right->parent = b;
+				b->color = a->color;
+				b->double_black = a->double_black;
+				tmp_p->right == b ? tmp_p->right = tmp_l : tmp_p->left = tmp_r;
+			}
+
+			bool	joestar_legacy(node_type *Jotaro, node_type *Joseph, node_type *Jonathan) const
+			{
+				if ((Jonathan->left == Joseph && Joseph->left == Jotaro) || (Jonathan->right == Joseph && Joseph->right == Jotaro))
+					return (true);
+				return (false);
+			}
 	};
 	
 }
