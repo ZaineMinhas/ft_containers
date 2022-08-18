@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/18 16:01:30 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/18 20:14:43 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,26 +61,20 @@ namespace ft
 				_root->right = NULL;
 				_root->color = BLACK;
 				_root->double_black = false;
-				_leaf = _root;
+				_root = NULL;
 			}
 
-			rb_tree(const rb_tree &tree)
-			: _cmp(tree.get_cmp()), _root(tree.get_root()), _leaf(tree.get_leaf()), _alloc(tree.get_alloc()), _nalloc(tree.get_nalloc()) {}
+			// rb_tree(const rb_tree &tree)
+			// : _cmp(tree.get_cmp()), _root(tree.get_root()), _alloc(tree.get_alloc()), _nalloc(tree.get_nalloc()) {}
 
 			/*-------------------------- Destructor ---------------------------*/
 
-			~rb_tree(void)
-			{
-				destroyer(_root);
-				_alloc.destroy(&_leaf->data);
-				_nalloc.deallocate(_leaf, 1);
-			}
+			~rb_tree(void) { destroyer(_root); }
 
 			/*--------------------------- Getters -----------------------------*/
 
 			key_compare				get_cmp(void) const { return (_cmp); }
 			node_type				*get_root(void) const { return (_root); }
-			node_type				*get_leaf(void) const { return (_leaf); }
 			allocator_type			*get_alloc(void) const { return (_alloc); }
 			node_allocator_type		*get_nalloc(void) const { return (_nalloc); }
 
@@ -94,8 +88,13 @@ namespace ft
 			{
 				node_type	*finded = to_find(val.first);
 
-				if (_root == _leaf)
+				if (finded && finded->data.first == val.first)
+					return (NULL);
+				if (!_root)
+				{
 					_root = new_node(val, BLACK, NULL);
+					return (_root);
+				}
 				else if (_cmp(val.first, finded->data.first))
 				{
 					finded->left = new_node(val, RED, finded);
@@ -174,25 +173,10 @@ namespace ft
 				std::cout << node->data.first << " | " << node->data.second << " | " << color << std::endl;
 			}
 
-			void	aff_tree(node_type *node, int space) const
-			{
-				int i;
-				if(node)
-				{
-					space = space + 10;
-					aff_tree(node->right, space);
-					std::cout << std::endl;
-					for (i = 10; i < space; i++)
-						std::cout << " ";
-					aff_node(node);
-					std::cout << std::endl;
-					aff_tree(node->left, space);
-				}
-			}
+			void	aff_tree(void) const { get_aff_tree(_root, 0); }
 
 		private:
 			node_type				*_root;
-			node_type				*_leaf;
 			key_compare				_cmp;
 			allocator_type			_alloc;
 			node_allocator_type		_nalloc;
@@ -223,18 +207,21 @@ namespace ft
 						node->parent->right = NULL;
 				}
 				else
-					_root = _leaf;
+					_root = NULL;
 				_alloc.destroy(&node->data);
 				_nalloc.deallocate(node, 1);
 			}
 
 			void	destroyer(node_type *to_del)
 			{
-				if (to_del->left)
+				if (to_del)
+				{
 					destroyer(to_del->left);
-				if (to_del->right)
 					destroyer(to_del->right);
-				destroy_node(to_del);
+					_alloc.destroy(&to_del->data);
+					_nalloc.deallocate(to_del, 1);
+					to_del = NULL;
+				}
 			}
 
 			void	rot_left(node_type *node)
@@ -246,13 +233,18 @@ namespace ft
 				node->left = tmp_a;
 				tmp_a->right = tmp_b;
 				node->parent = tmp_a->parent;
-				tmp_a->parent = node;
 				if (tmp_b)
 					tmp_b->parent = tmp_a;
 				if (node->parent)
-					node->parent->right = node;
+				{
+					if (tmp_a == tmp_a->parent->right)
+						node->parent->right = node;
+					else
+						node->parent->left = node;
+				}
 				else
 					_root = node;
+				tmp_a->parent = node;
 			}
 
 			void	rot_right(node_type *node)
@@ -264,13 +256,18 @@ namespace ft
 				node->right = tmp_a;
 				tmp_a->left = tmp_b;
 				node->parent = tmp_a->parent;
-				tmp_a->parent = node;
 				if (tmp_b)
 					tmp_b->parent = tmp_a;
 				if (node->parent)
-					node->parent->left = node;
+				{
+					if (tmp_a == tmp_a->parent->right)
+						node->parent->right = node;
+					else
+						node->parent->left = node;
+				}
 				else
 					_root = node;
+				tmp_a->parent = node;
 			}
 
 			void	switch_color(node_type *node)
@@ -480,6 +477,22 @@ namespace ft
 				if ((Jonathan->left == Joseph && Joseph->left == Jotaro) || (Jonathan->right == Joseph && Joseph->right == Jotaro))
 					return (true);
 				return (false);
+			}
+
+			void	get_aff_tree(node_type *node, int space) const
+			{
+				int	i;
+				if(node)
+				{
+					space += 10;
+					get_aff_tree(node->right, space);
+					std::cout << std::endl;
+					for (i = 10; i < space; i++)
+						std::cout << " ";
+					aff_node(node);
+					std::cout << std::endl;
+					get_aff_tree(node->left, space);
+				}
 			}
 	};
 }
