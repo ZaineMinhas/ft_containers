@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/17 19:04:27 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/18 16:01:30 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,12 @@ namespace ft
 
 			/*-------------------------- Destructor ---------------------------*/
 
-			~rb_tree() {}			//a faire
+			~rb_tree(void)
+			{
+				destroyer(_root);
+				_alloc.destroy(&_leaf->data);
+				_nalloc.deallocate(_leaf, 1);
+			}
 
 			/*--------------------------- Getters -----------------------------*/
 
@@ -221,6 +226,15 @@ namespace ft
 					_root = _leaf;
 				_alloc.destroy(&node->data);
 				_nalloc.deallocate(node, 1);
+			}
+
+			void	destroyer(node_type *to_del)
+			{
+				if (to_del->left)
+					destroyer(to_del->left);
+				if (to_del->right)
+					destroyer(to_del->right);
+				destroy_node(to_del);
 			}
 
 			void	rot_left(node_type *node)
