@@ -51,11 +51,43 @@ int		main(void)
 {
 	ft::map<const int, char> map;
 
-	std::cout << map.empty() << std::endl;
+	// std::cout << map.insert(ft::make_pair(5, 65)).first->second << std::endl;
+	// std::cout << map.insert(ft::make_pair(5, 65)).second << std::endl;
+	map.insert(ft::make_pair(5, 65));
+	map.insert(ft::make_pair(6, 65));
+	map.insert(ft::make_pair(7, 65));
+	map.insert(ft::make_pair(8, 65));
+	map.insert(ft::make_pair(18, 65));
+	map.insert(ft::make_pair(1, 65));
+	map.insert(ft::make_pair(-4, 65));
+	map.insert(ft::make_pair(1000, 65));
+	map.insert(ft::make_pair(2, 65));
+	map.insert(ft::make_pair(84, 65));
+	map.insert(ft::make_pair(69, 65));
+	map.insert(ft::make_pair(420, 65));
+	map.insert(ft::make_pair(42, 65));
+	map.insert(ft::make_pair(19, 65));
+	map.insert(ft::make_pair(101, 65));
+	// std::cout << map.begin()->first;
+	// std::cout << map.end()->first;
+	for (ft::map<const int, char>::iterator it = map.begin(); it != map.end(); --it)
+		map.aff_node(it);
+
+	// ft::map<const int, char>::iterator it = map.begin();
+	// map.aff_node(it);
+	// it++;
+	// map.aff_node(++it);
+	// map.aff_node(++it);
+
+	std::cout << "----------------------------------------------------" << std::endl;
+
+	map.aff_tree();
+
+	// std::cout << map.empty() << std::endl;
 
 	return (0);
 }
 
 
 
-// clear && c++ red_black_tree.hpp main.cpp && ./a.out
+// clear && c++ main.cpp && ./a.out

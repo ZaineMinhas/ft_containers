@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 17:50:39 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/18 20:13:27 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/19 20:09:27 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ namespace ft
 			typedef typename allocator_type::reference				reference;
 			typedef typename allocator_type::pointer				pointer;
 			typedef typename allocator_type::const_pointer			const_pointer;
-			typedef ft::random_access_iterator<value_type>			iterator;
-			typedef ft::random_access_iterator<const value_type>	const_iterator;
+			typedef ft::tree_iterator<value_type, node<Key, T> >	iterator;
+			// typedef ft::tree_iterator<const value_type, node<Key, T> >			const_iterator;
 			typedef ft::reverse_iterator<iterator>					reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
+			// typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 
 			/*-------------------------- Constructor --------------------------*/
 
@@ -60,10 +60,10 @@ namespace ft
 
 			/*-------------------------- Iterators ----------------------------*/
 
-			// iterator begin(void);
+			iterator begin(void) { return (iterator(_tree.get_root())); }
 			// const_iterator begin(void) const;
 
-			// iterator end(void);
+			iterator end(void) { return iterator(NULL); }
 			// const_iterator end(void) const;
 
 			// reverse_iterator rbegin(void);
@@ -84,13 +84,17 @@ namespace ft
 
 			/*-------------------------- Modifiers ----------------------------*/
 
-			// pair<iterator, bool>	insert(const value_type &val)
-			// {
-			// 	if (!_tree.insert(val))
-			// 		return (make_pair(/*iterator*/, false));
-			// 	_size++;
-			// 	return (make_pair(/*iterator*/, true));
-			// }
+			pair<iterator, bool>	insert(const value_type &val)
+			{
+				iterator	it(_tree.insert(val));
+				if (it.get_node()->double_black)
+				{
+					it.get_node()->double_black = false;
+					return (make_pair(it, false));
+				}
+				_size++;
+				return (make_pair(it, true));
+			}
 
 			// iterator	insert(iterator position, const value_type &val);
 			// template <class InputIterator>
@@ -138,6 +142,11 @@ namespace ft
 			size_type		get_size(void) const { return (_size); }
 			tree_type		get_tree(void) const { return (_tree); }
 			key_compare		get_cmp(void) const { return (_cmp); }
+
+			/*---------------------------- Utils ------------------------------*/
+
+			void	aff_tree(void) const { _tree.aff_tree(); }
+			void	aff_node(iterator it) const { _tree.aff_node(it.get_node()); }
 
 		private:
 			key_compare		_cmp;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 16:39:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/17 18:46:04 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/19 20:02:48 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -333,9 +333,9 @@ namespace ft
 
 		/*----- Constructors -----*/
 
-		tree_iterator(void) : _node(NULL), _leaf(NULL) {}
-		tree_iterator(pointer nod, pointer leaf) : _node(nod), _leaf(leaf) {}
-		tree_iterator(const tree_iterator<value_type, node_type> &it) : _node(it.get_node()), _leaf(it.get_leaf()) {}
+		tree_iterator(void) : _node(NULL) {}
+		tree_iterator(pointer nod) : _node(nod) {}
+		tree_iterator(const tree_iterator<value_type, node_type> &it) : _node(it.get_node()) {}
 
 		/*----- Destructor -----*/
 
@@ -347,8 +347,6 @@ namespace ft
 		{
 			if (_node != it.get_node())
 				_node = it.get_node();
-			if (_leaf != it.get_leaf())
-				_leaf = it.get_leaf();
 			return (*this);
 		}
 
@@ -359,7 +357,6 @@ namespace ft
 		/*----- Getters -----*/
 
 		pointer		get_node(void) const { return (_node); }
-		pointer		get_leaf(void) const { return (_leaf); }
 
 		/*----- Dereferenced value -----*/
 
@@ -380,7 +377,7 @@ namespace ft
 		{
 			pointer	tmp = _node;
 			_node = next(_node);
-			return (tree_iterator(tmp, _leaf));
+			return (tree_iterator(tmp));
 		}
 
 		/*----- Pre decrement operator -----*/
@@ -397,16 +394,28 @@ namespace ft
 		{
 			pointer	tmp = _node;
 			_node = prev(_node);
-			return (tree_iterator(tmp, _leaf));
+			return (tree_iterator(tmp));
 		}
 
 		/*----- Utils -----*/
 
-		node_type	*next(node_type &nod)
+		void	aff_node(node_type *nod) const
+			{
+				if (!nod)
+				{
+					std::cout << "(null)" <<std::endl;
+					return ;
+				}
+				std::string	color;
+				nod->color ? color = "black" : color = "red";
+				std::cout << nod->data.first << " | " << nod->data.second << " | " << color << std::endl;
+			}
+
+		node_type	*next(node_type *nod)
 		{
 			node_type	*tmp;
 
-			if (nod->right)
+			if (!nod->right)
 			{
 				tmp = nod;
 				while (tmp->parent && tmp == tmp->parent->right)
@@ -416,15 +425,15 @@ namespace ft
 			}
 			tmp = nod->right;
 			while (tmp->left)
-				tmp->left;
+				tmp = tmp->left;
 			return (tmp);
 		}
 
-		node_type	*prev(node_type &nod)
+		node_type	*prev(node_type *nod)
 		{
 			node_type	*tmp;
 
-			if (nod->left)
+			if (!nod->left)
 			{
 				tmp = nod;
 				while (tmp->parent && tmp == tmp->parent->left)
@@ -440,8 +449,17 @@ namespace ft
 
 		private:
 			pointer	_node;
-			pointer	_leaf;
 	};
+
+	/*----- Relational operator -----*/
+
+	template<class L_T, class R_T, class L_node, class R_node>
+	bool	operator==(ft::tree_iterator<L_T, L_node> const &lhs, ft::tree_iterator<R_T, R_node> const &rhs)
+	{ return (lhs.get_node() == rhs.get_node()); }
+
+	template<class L_T, class R_T, class L_node, class R_node>
+	bool	operator!=(ft::tree_iterator<L_T, L_node> const &lhs, ft::tree_iterator<R_T, R_node> const &rhs)
+	{ return (lhs.get_node() != rhs.get_node()); }
 
 }
 

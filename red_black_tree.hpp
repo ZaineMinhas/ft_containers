@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   red_black_tree.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/18 20:14:43 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/19 19:17:00 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,10 @@ namespace ft
 				node_type	*finded = to_find(val.first);
 
 				if (finded && finded->data.first == val.first)
-					return (NULL);
+				{
+					finded->double_black = true;
+					return (finded);
+				}
 				if (!_root)
 				{
 					_root = new_node(val, BLACK, NULL);
