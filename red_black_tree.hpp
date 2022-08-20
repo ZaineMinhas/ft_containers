@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   red_black_tree.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aliens <aliens@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/19 19:17:00 by marvin           ###   ########.fr       */
+/*   Updated: 2022/08/20 20:17:39 by aliens           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,12 +113,15 @@ namespace ft
 
 			/*-------------------------- Delete ----------------------------*/
 
-			node_type	*del_node(value_type val)
+			node_type	*del_node(key_type val)
 			{
-				node_type	*db = to_find(val.first);
-				if (db->data.first != val.first || db->data.second != val.second)
+				node_type	*db = to_find(val);
+				if (db->data.first != val)
+				{
+					db->double_black = true;
 					return (db);
-				if (!db->left && !db->right)
+				}
+				if (!(db->left && db->right))
 				{
 					if (db->color == RED || db == _root)
 						destroy_node(db);
@@ -135,13 +138,13 @@ namespace ft
 					{
 						if (tmp->left)
 						{
-							tmp->color = BLACK;
+							switch_color(tmp->left);
 							tmp->left->parent = tmp->parent;
 							tmp == tmp->parent->left ? tmp->parent->left = tmp->left : tmp->parent->right = tmp->left;
 						}
 						else
 						{
-							tmp->color = BLACK;
+							switch_color(tmp->right);
 							tmp->right->parent = tmp->parent;
 							tmp == tmp->parent->left ? tmp->parent->left = tmp->right : tmp->parent->right = tmp->right;
 						}
@@ -153,9 +156,10 @@ namespace ft
 							copy_node(db, tmp);
 						else
 						{
-							tmp->double_black = true;
+							// aff_node(db);
+							db->double_black = true;
 							copy_node(db, tmp);
-							del_balance(tmp);
+							del_balance(db);
 						}
 					}
 				}
@@ -176,7 +180,12 @@ namespace ft
 				std::cout << node->data.first << " | " << node->data.second << " | " << color << std::endl;
 			}
 
-			void	aff_tree(void) const { get_aff_tree(_root, 0); }
+			void	aff_tree(void) const
+			{
+				std::cout << "----------------------------------------------------" << std::endl;
+				get_aff_tree(_root, 0);
+				std::cout << "----------------------------------------------------" << std::endl;
+			}
 
 		private:
 			node_type				*_root;
@@ -202,15 +211,15 @@ namespace ft
 
 			void	destroy_node(node_type *node)
 			{
-				if (node != _root)
+				if (node == _root)
+					_root = NULL;
+				else
 				{
 					if (node == node->parent->left)
 						node->parent->left = NULL;
 					else
 						node->parent->right = NULL;
 				}
-				else
-					_root = NULL;
 				_alloc.destroy(&node->data);
 				_nalloc.deallocate(node, 1);
 			}
@@ -342,7 +351,6 @@ namespace ft
 					node_type	*far_schild = get_far_schild(db);
 					if (far_schild && far_schild->color == RED)
 					{
-						std::cout << "SALUT" << std::endl;
 						sibling->color = db->parent;
 						db->parent->color = BLACK;
 						db == db->parent->left ? rot_left(db->parent) : rot_right(db->parent);
@@ -457,22 +465,18 @@ namespace ft
 
 			void	copy_node(node_type *a, node_type *b)
 			{
-				node_type	*tmp_p = b->parent;
-				node_type	*tmp_l = b->left;
-				node_type	*tmp_r = b->right;
-
-				if (a != _root)
+				if (a->parent == NULL)
+					this->_root = b;
+				if (b != this->_root)
 					a->parent->left == a ? a->parent->left = b : a->parent->right = b;
-				else
-					_root = b;
+				if (a->left)
+					a->left->parent = b;
+				if (a->right)
+					a->right->parent = b;
 				b->parent = a->parent;
 				b->left = a->left;
 				b->right = a->right;
-				b->left->parent = b;
-				b->right->parent = b;
 				b->color = a->color;
-				b->double_black = a->double_black;
-				tmp_p->right == b ? tmp_p->right = tmp_l : tmp_p->left = tmp_r;
 			}
 
 			bool	joestar_legacy(node_type *Jotaro, node_type *Joseph, node_type *Jonathan) const

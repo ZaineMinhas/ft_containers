@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aliens <aliens@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 17:50:39 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/19 20:09:27 by marvin           ###   ########.fr       */
+/*   Updated: 2022/08/20 19:17:03 by aliens           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ namespace ft
 
 			/*-------------------------- Capacity -----------------------------*/
 
-			bool	empty(void) const { return (!_size); }
+			bool		empty(void) const { return (!_size); }
 			size_type	size(void) const { return (_size); }
 			size_type	max_size(void) const { return (_alloc.max_size()); }
 
@@ -101,7 +101,17 @@ namespace ft
 			// void	insert(InputIterator first, InputIterator last);
 
 			// void		erase(iterator position);
-			size_type	erase(const key_type &k);
+			size_type	erase(const key_type &k)
+			{
+				iterator	it(_tree.del_node(k));
+				if (it.get_node()->double_black)
+				{
+					it.get_node()->double_black = false;
+					return (_size);
+				}
+				_size--;
+				return (_size);
+			}
 			// void		erase(iterator first, iterator last);
 
 			// void	swap(map &x);
@@ -139,7 +149,6 @@ namespace ft
 
 			/*--------------------------- Getters -----------------------------*/
 
-			size_type		get_size(void) const { return (_size); }
 			tree_type		get_tree(void) const { return (_tree); }
 			key_compare		get_cmp(void) const { return (_cmp); }
 
