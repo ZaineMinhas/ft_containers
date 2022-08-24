@@ -6,7 +6,7 @@
 /*   By: aliens <aliens@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/20 20:17:39 by aliens           ###   ########.fr       */
+/*   Updated: 2022/08/24 19:11:05 by aliens           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,6 @@ namespace ft
 				_root = NULL;
 			}
 
-			// rb_tree(const rb_tree &tree)
-			// : _cmp(tree.get_cmp()), _root(tree.get_root()), _alloc(tree.get_alloc()), _nalloc(tree.get_nalloc()) {}
-
 			/*-------------------------- Destructor ---------------------------*/
 
 			~rb_tree(void) { destroyer(_root); }
@@ -77,10 +74,6 @@ namespace ft
 			node_type				*get_root(void) const { return (_root); }
 			allocator_type			*get_alloc(void) const { return (_alloc); }
 			node_allocator_type		*get_nalloc(void) const { return (_nalloc); }
-
-			/*-------------------------- Iterators ----------------------------*/
-
-			// a faire (peut etre pas ici)
 
 			/*-------------------------- Insert ----------------------------*/
 
@@ -113,27 +106,28 @@ namespace ft
 
 			/*-------------------------- Delete ----------------------------*/
 
-			node_type	*del_node(key_type val)
+			bool	del_node(key_type val)
 			{
-				node_type	*db = to_find(val);
-				if (db->data.first != val)
+				node_type	*to_del = to_find(val);
+				if (to_del->data.first != val)
+					return (false);
+				if (!to_del->left && !to_del->right)
 				{
-					db->double_black = true;
-					return (db);
-				}
-				if (!(db->left && db->right))
-				{
-					if (db->color == RED || db == _root)
-						destroy_node(db);
+					if (to_del->color == RED || to_del == _root)
+						destroy_node(to_del);
 					else
 					{
+						node_type	*db = new_node(value_type(), BLACK, to_del->parent);
 						db->double_black = true;
+						bool	l_or_r = to_del == to_del->parent->left ? true : false;
+						destroy_node(to_del);
+						l_or_r ? db->parent->left = db : db->parent->right = db;
 						del_balance(db);
 					}
 				}
 				else
 				{
-					node_type	*tmp = !db->left ? minimum(db->right) : maximum(db->left);
+					node_type	*tmp = to_del->left ? maximum(to_del->left) : minimum(to_del->right);
 					if (tmp->left || tmp->right)
 					{
 						if (tmp->left)
@@ -148,25 +142,29 @@ namespace ft
 							tmp->right->parent = tmp->parent;
 							tmp == tmp->parent->left ? tmp->parent->left = tmp->right : tmp->parent->right = tmp->right;
 						}
-						copy_node(db, tmp);
+						copy_node(to_del, tmp);
 					}
 					else
 					{
 						if (tmp->color == RED)
-							copy_node(db, tmp);
+						{
+							tmp == tmp->parent->left ? tmp->parent->left = NULL : tmp->parent->right = NULL;
+							copy_node(to_del, tmp);
+						}
 						else
 						{
-							// aff_node(db);
+							node_type	*db = new_node(value_type(), BLACK, tmp->parent);
 							db->double_black = true;
-							copy_node(db, tmp);
+							tmp == tmp->parent->left ? tmp->parent->left = db : tmp->parent->right = db;
+							copy_node(to_del, tmp);
 							del_balance(db);
 						}
 					}
 				}
-				return (db);
+				return (true);
 			}
 
-			/*-------------------------- Aff Tree ----------------------------*/
+			/*-------------------------- Utils ----------------------------*/
 
 			void	aff_node(node_type *node) const
 			{
@@ -185,6 +183,20 @@ namespace ft
 				std::cout << "----------------------------------------------------" << std::endl;
 				get_aff_tree(_root, 0);
 				std::cout << "----------------------------------------------------" << std::endl;
+			}
+
+			node_type	*minimum(node_type* x) const
+			{
+				while (x->left)
+					x = x->left;
+				return (x);
+			}
+
+			node_type*	maximum(node_type* x) const
+			{
+				while (x->right)
+					x = x->right;
+				return (x);
 			}
 
 		private:
@@ -215,9 +227,9 @@ namespace ft
 					_root = NULL;
 				else
 				{
-					if (node == node->parent->left)
+					if (node->parent && node == node->parent->left)
 						node->parent->left = NULL;
-					else
+					else if (node->parent && node == node->parent->right)
 						node->parent->right = NULL;
 				}
 				_alloc.destroy(&node->data);
@@ -334,14 +346,17 @@ namespace ft
 				return (node);
 			}
 
-			node_type	*del_balance(node_type *db)
+			void	del_balance(node_type *db)
 			{
 				if (db == _root)
-					return (db);
+				{
+					db->color = BLACK;
+					return ;
+				}
 				node_type	*sibling = get_sibling(db);
 				if (sibling->color == RED)
 				{
-					sibling->color = db->parent;
+					sibling->color = db->parent->color;
 					db->parent->color = RED;
 					db == db->parent->left ? rot_left(db->parent) : rot_right(db->parent);
 					del_balance(db);
@@ -351,15 +366,11 @@ namespace ft
 					node_type	*far_schild = get_far_schild(db);
 					if (far_schild && far_schild->color == RED)
 					{
-						sibling->color = db->parent;
+						sibling->color = db->parent->color;
 						db->parent->color = BLACK;
 						db == db->parent->left ? rot_left(db->parent) : rot_right(db->parent);
 						if (db->double_black)
-						{
-							db == db->parent->left ? db->parent->left = NULL : db->parent->right = NULL;
-							_alloc.destroy(&db->data);
-							_nalloc.deallocate(db, 1);
-						}
+							destroy_node(db);
 						far_schild->color = BLACK;
 					}
 					else
@@ -367,29 +378,23 @@ namespace ft
 						node_type	*near_schild = get_near_schild(db);
 						if (near_schild && near_schild->color == RED)
 						{
+							near_schild->color = sibling->color;
 							sibling->color = RED;
-							near_schild->color = BLACK;
 							db == db->parent->left ? rot_right(sibling) : rot_left(sibling);
 							del_balance(db);
 						}
 						else
 						{
-							node_type	*tmp_parent = db->parent;
 							if (db->double_black)
-							{
-								db == db->parent->left ? db->parent->left = NULL : db->parent->right = NULL;
-								_alloc.destroy(&db->data);
-								_nalloc.deallocate(db, 1);
-							}
+								destroy_node(db);
 							sibling->color = RED;
-							if (tmp_parent->color == BLACK)
-								del_balance(tmp_parent);
+							if (db->parent->color == BLACK)
+								del_balance(db->parent);
 							else
-								tmp_parent->color = BLACK;
+								db->parent->color = BLACK;
 						}
 					}
 				}
-				return (db);
 			}
 
 			/*---------------------------- Utils -----------------------------*/
@@ -449,34 +454,27 @@ namespace ft
 				return (node->parent->right->left);
 			}
 
-			node_type	*minimum(node_type* x) const
-			{
-				while (x->left)
-					x = x->left;
-				return (x);
-			}
-
-			node_type*	maximum(node_type* x) const
-			{
-				while (x->right)
-					x = x->right;
-				return (x);
-			}
-
 			void	copy_node(node_type *a, node_type *b)
 			{
-				if (a->parent == NULL)
-					this->_root = b;
-				if (b != this->_root)
-					a->parent->left == a ? a->parent->left = b : a->parent->right = b;
-				if (a->left)
-					a->left->parent = b;
-				if (a->right)
-					a->right->parent = b;
+				node_type	*tmp_p = b->parent;
+				node_type	*tmp_l = b->left;
+				node_type	*tmp_r = b->right;
+
+				if (a != _root)
+					a == a->parent->left ? a->parent->left = b : a->parent->right = b;
+				else
+					_root = b;
 				b->parent = a->parent;
 				b->left = a->left;
 				b->right = a->right;
+				if (b->left)
+					b->left->parent = b;
+				if (b->right)
+					b->right->parent = b;
 				b->color = a->color;
+				_alloc.destroy(&a->data);
+				_nalloc.deallocate(a, 1);
+				a = NULL;
 			}
 
 			bool	joestar_legacy(node_type *Jotaro, node_type *Joseph, node_type *Jonathan) const

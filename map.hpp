@@ -6,7 +6,7 @@
 /*   By: aliens <aliens@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 17:50:39 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/20 19:17:03 by aliens           ###   ########.fr       */
+/*   Updated: 2022/08/24 19:09:08 by aliens           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ namespace ft
 
 			/*-------------------------- Iterators ----------------------------*/
 
-			iterator begin(void) { return (iterator(_tree.get_root())); }
+			iterator begin(void) { return (iterator(_tree.minimum(_tree.get_root()))); }
 			// const_iterator begin(void) const;
 
 			iterator end(void) { return iterator(NULL); }
@@ -96,23 +96,42 @@ namespace ft
 				return (make_pair(it, true));
 			}
 
-			// iterator	insert(iterator position, const value_type &val);
-			// template <class InputIterator>
-			// void	insert(InputIterator first, InputIterator last);
+			iterator	insert(iterator position, const value_type &val)
+			{
+				static_cast<void>(position);
+				pair<iterator, bool>	p = insert(val);
+				if (p.second == false)
+					return (p.first);
+				_size++;
+				return (p.first);
+			}
 
-			// void		erase(iterator position);
+			template <class InputIterator>
+			void	insert(InputIterator first, InputIterator last)
+			{
+				while (first != last)
+				{
+					_tree.insert(*first);
+					_size++;
+				}
+			}
+
+			void		erase(iterator position)
+			{ erase(position.get_node()->data.first); }
+
 			size_type	erase(const key_type &k)
 			{
-				iterator	it(_tree.del_node(k));
-				if (it.get_node()->double_black)
-				{
-					it.get_node()->double_black = false;
-					return (_size);
-				}
+				if (empty() || !_tree.del_node(k))
+					return (0);
 				_size--;
-				return (_size);
+				return (1);
 			}
-			// void		erase(iterator first, iterator last);
+
+			void		erase(iterator first, iterator last)
+			{
+				while (first != last)
+					erase(first++);
+			}
 
 			// void	swap(map &x);
 
@@ -163,4 +182,26 @@ namespace ft
 			size_type		_size;
 			tree_type		_tree;
 	};
+
+	/*--------------------- NON MEMBER FONCTION -----------------------*/
+	/*--------------------- relational operators ----------------------*/
+
+	// template <class Key, class T, class Compare, class Alloc>
+	// bool operator==( const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs);
+
+	// template <class Key, class T, class Compare, class Alloc>
+	// bool operator!=(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs);
+
+	// template <class Key, class T, class Compare, class Alloc>
+	// bool operator<(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs);
+
+	// template <class Key, class T, class Compare, class Alloc>
+	// bool operator<=(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs);
+
+	// template <class Key, class T, class Compare, class Alloc>
+	// bool operator>(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs);
+
+	// template <class Key, class T, class Compare, class Alloc>
+	// bool operator>=(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs);
+
 }
