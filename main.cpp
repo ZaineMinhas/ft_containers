@@ -4,7 +4,7 @@
 
 int		main(void)
 {
-	ft::map<const int, char> map;
+	ft::map<int, char> map;
 
 	// std::cout << map.insert(ft::make_pair(5, 65)).second << std::endl;
 	// std::cout << map.insert(ft::make_pair(5, 66)).second << std::endl;
@@ -47,47 +47,48 @@ int		main(void)
 	// map.aff_node(++it);
 	// map.aff_node(++it);
 
-	// map.aff_node(map.get_tree().get_root());
-	std::cout << "del : " << map.erase(6) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(5) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(1) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(84) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(19) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(101) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(1000) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(420) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(84) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(8) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(42) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(69) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(18) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(7) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(2) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(-4) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(2) << std::endl;
-	map.aff_tree();
-	std::cout << "del : " << map.erase(666) << std::endl;
-	map.aff_tree();
-	std::cout << "--- STOP ---\n";
+	// std::cout << "del : " << map.erase(6) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(5) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(1) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(84) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(19) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(101) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(1000) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(420) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(84) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(8) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(42) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(69) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(18) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(7) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(2) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(-4) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(2) << std::endl;
+	// map.aff_tree();
+	// std::cout << "del : " << map.erase(666) << std::endl;
+	// map.aff_tree();
 
 	// std::cout << "----------------------------------------------------" << std::endl;
 
+
+	std::cout << "--- STOP ---\n";
+	// map.aff_tree();
 	std::cout << "size : " << map.size() << std::endl;
 	std::cout << "empty : " << map.empty() << std::endl;
 

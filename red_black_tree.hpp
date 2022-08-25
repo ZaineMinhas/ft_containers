@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/25 15:47:25 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/25 18:01:09 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ namespace ft
 
 	/*----- RED BLACK TREE STRUCT -----*/
 
-	template <class Key, class T, class Compare = ft::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> >, class Node_alloc = std::allocator<ft::node<const Key, T> >, class Node = ft::node<const Key, T> >
+	template <class Key, class T, class Compare = ft::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> >, class Node_alloc = std::allocator<ft::node<Key, T> >, class Node = ft::node<Key, T> >
 	class rb_tree
 	{
 		public:
@@ -192,11 +192,35 @@ namespace ft
 				return (x);
 			}
 
-			node_type*	maximum(node_type* x) const
+			node_type	*maximum(node_type* x) const
 			{
 				while (x->right)
 					x = x->right;
 				return (x);
+			}
+
+			node_type	*to_find(const key_type &val) const
+			{
+				node_type	*to_find = _root;
+
+				while (to_find)
+				{
+					if (_cmp(val, to_find->data.first))
+					{
+						if (!to_find->left)
+							return (to_find);
+						to_find = to_find->left;
+					}
+					else if (_cmp(to_find->data.first, val))
+					{
+						if (!to_find->right)
+							return (to_find);
+						to_find = to_find->right;
+					}
+					else
+						return (to_find);
+				}
+				return (to_find);
 			}
 
 		private:
@@ -244,6 +268,8 @@ namespace ft
 					destroyer(to_del->right);
 					_alloc.destroy(&to_del->data);
 					_nalloc.deallocate(to_del, 1);
+					if (to_del == _root)
+						_root = NULL;
 					to_del = NULL;
 				}
 			}
@@ -398,30 +424,6 @@ namespace ft
 			}
 
 			/*---------------------------- Utils -----------------------------*/
-
-			node_type	*to_find(const key_type &val) const
-			{
-				node_type	*to_find = _root;
-
-				while (to_find)
-				{
-					if (_cmp(val, to_find->data.first))
-					{
-						if (!to_find->left)
-							return (to_find);
-						to_find = to_find->left;
-					}
-					else if (_cmp(to_find->data.first, val))
-					{
-						if (!to_find->right)
-							return (to_find);
-						to_find = to_find->right;
-					}
-					else
-						return (to_find);
-				}
-				return (to_find);
-			}
 
 			node_type	*get_uncle(node_type *node) const
 			{

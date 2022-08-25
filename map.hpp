@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 17:50:39 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/25 15:47:07 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/25 18:05:04 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ namespace ft
 
 			/*-------------------------- Destructor ---------------------------*/
 
-			~map(void) {}
+			~map(void) { clear(); }
 
 			/*-------------------------- Operator= ----------------------------*/
 
@@ -66,10 +66,10 @@ namespace ft
 			iterator end(void) { return iterator(NULL); }
 			// const_iterator end(void) const;
 
-			// reverse_iterator rbegin(void);
+			reverse_iterator rbegin(void) { return (end()); }
 			// const_reverse_iterator rbegin(void) const;
 
-			// reverse_iterator rend(void);
+			reverse_iterator rend(void) { return (begin()); }
 			// const_reverse_iterator rend(void) const;
 
 			/*-------------------------- Capacity -----------------------------*/
@@ -111,12 +111,12 @@ namespace ft
 			{
 				while (first != last)
 				{
-					_tree.insert(*first);
-					_size++;
+					_tree.insert(NULL, first.get_node()->data);
+					first++;
 				}
 			}
 
-			void		erase(iterator position)
+			void	erase(iterator position)
 			{ erase(position.get_node()->data.first); }
 
 			size_type	erase(const key_type &k)
@@ -137,8 +137,11 @@ namespace ft
 
 			void	clear(void)
 			{
-				_tree.~rb_tree();
-				_size = 0;
+				if (!empty())
+				{
+					_tree.~rb_tree();
+					_size = 0;
+				}
 			}
 
 			/*-------------------------- Observers ----------------------------*/
@@ -148,10 +151,23 @@ namespace ft
 
 			/*-------------------------- Operations ---------------------------*/
 
-			// iterator find(const key_type &k);
+			iterator find(const key_type &k)
+			{
+				iterator	finded(_tree.to_find(k));
+				if (finded.get_node()->data.first == k)
+					return (finded);
+				return (end());
+			}
+
 			// const_iterator find(const key_type &k) const;
 
-			// size_type count(const key_type &k) const;
+			size_type count(const key_type &k) const
+			{
+				iterator	finded(_tree.to_find(k));
+				if (finded.get_node()->data.first == k)
+					return (1);
+				return (0);
+			}
 
 			// iterator lower_bound(const key_type &k);
 			// const_iterator lower_bound(const key_type &k) const;
@@ -181,27 +197,73 @@ namespace ft
 			allocator_type	_alloc;
 			size_type		_size;
 			tree_type		_tree;
+
+			/*---------- VALUE COMPARE ----------*/
+
+			class value_compare : std::binary_function <value_type, value_type, bool>
+			{
+				friend class map;
+
+				protected:
+					Compare comp;
+					value_compare (Compare c) : comp(c) {}
+
+				public:
+					typedef bool result_type;
+					typedef value_type first_argument_type;
+					typedef value_type second_argument_type;
+
+					bool operator() (const value_type& x, const value_type& y) const
+					{ return comp(x.first, y.first); }
+			};
 	};
 
 	/*--------------------- NON MEMBER FONCTION -----------------------*/
 	/*--------------------- relational operators ----------------------*/
 
-	// template <class Key, class T, class Compare, class Alloc>
-	// bool operator==( const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs);
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator==(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs)
+	{
+		if (lhs.size() != rhs.size())
+			return (false);
+		typename map<Key, T>::iterator	lhs_b(lhs.begin());
+		typename map<Key, T>::iterator	rhs_b(rhs.begin());
+		typename map<Key, T>::iterator	ite(lhs.end());
 
-	// template <class Key, class T, class Compare, class Alloc>
-	// bool operator!=(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs);
+		while (lhs_b != ite)
+		{
+			if (lhs_b.get_node()->data.first != rhs_b.get_node()->data.first)
+				return (false);
+			lhs_b++;
+			rhs_b++;
+		}
+		return (true);
+	}
 
-	// template <class Key, class T, class Compare, class Alloc>
-	// bool operator<(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs);
+	template <class Key, class T, class Compare, class Alloc>
+	bool	operator!=(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs)
+	{ return (!(lhs == rhs)); }
 
-	// template <class Key, class T, class Compare, class Alloc>
-	// bool operator<=(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs);
+	template <class Key, class T, class Compare, class Alloc>
+	bool	operator<(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs)
+	{ return (lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())); }
 
-	// template <class Key, class T, class Compare, class Alloc>
-	// bool operator>(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs);
+	template <class Key, class T, class Compare, class Alloc>
+	bool	operator<=(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs)
+	{ return (!(rhs < lhs)); }
 
-	// template <class Key, class T, class Compare, class Alloc>
-	// bool operator>=(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs);
+	template <class Key, class T, class Compare, class Alloc>
+	bool	operator>(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs)
+	{ return (rhs < lhs); }
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool	operator>=(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs)
+	{ return (!(lhs < rhs)); }
+
+	/*---------------------------- swap -------------------------------*/
+
+	template <class Key, class T, class Compare, class Alloc>
+	void	swap(map<Key, T, Compare, Alloc>& x, map<Key, T, Compare, Alloc>& y)
+	{ x.swap(y); }
 
 }
