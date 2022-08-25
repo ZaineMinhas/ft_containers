@@ -2,8 +2,6 @@
 #include "red_black_tree.hpp"
 #include "map.hpp"
 
-
-
 int		main(void)
 {
 	ft::map<const int, char> map;
