@@ -22,7 +22,7 @@ int		main(void)
 	map.insert(ft::make_pair(1, 65));
 	map.insert(ft::make_pair(-4, 65));
 	map.insert(ft::make_pair(1000, 65));
-	map.insert(ft::make_pair(2, 65));
+	map.insert(ft::make_pair(2, 66));
 	map.insert(ft::make_pair(84, 65));
 	map.insert(ft::make_pair(69, 65));
 	map.insert(ft::make_pair(420, 65));
@@ -31,6 +31,12 @@ int		main(void)
 	map.insert(ft::make_pair(101, 65));
 
 	map.aff_tree();
+
+	// std::cout << "----------------------------------------------------" << std::endl;
+
+	ft::map<int, char> map2 = map;
+	// ft::map<int, char> map2(map.begin(), map.end());
+	// map2.insert(map.begin(), map.end());
 
 	// std::cout << "----------------------------------------------------" << std::endl;
 
@@ -84,16 +90,16 @@ int		main(void)
 	// std::cout << "del : " << map.erase(666) << std::endl;
 	// map.aff_tree();
 
-	// std::cout << "----------------------------------------------------" << std::endl;
-
-
 	std::cout << "--- STOP ---\n";
-	// map.aff_tree();
-	std::cout << "size : " << map.size() << std::endl;
-	std::cout << "empty : " << map.empty() << std::endl;
+	std::cout << "size : " << map2.size() << std::endl;
+	std::cout << "empty : " << map2.empty() << std::endl;
+	map2[3] = 67;
+	map2.aff_tree();
 
 	return (0);
 }
+
+// clear && c++ main.cpp && ./a.out
 
 /*int	main(void)
 {
