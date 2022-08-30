@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/25 18:01:09 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/30 18:19:06 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,21 +37,21 @@ namespace ft
 
 	/*----- RED BLACK TREE STRUCT -----*/
 
-	template <class Key, class T, class Compare = ft::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> >, class Node_alloc = std::allocator<ft::node<Key, T> >, class Node = ft::node<Key, T> >
+	template <class Key, class T>
 	class rb_tree
 	{
 		public:
 			typedef Key												key_type;
 			typedef T												mapped_type;
 			typedef ft::pair<const Key, T>							value_type;
-			typedef Compare											key_compare;
-			typedef Alloc											allocator_type;
-			typedef Node_alloc										node_allocator_type;
-			typedef Node											node_type;
+			typedef ft::less<Key>									key_compare;
+			typedef std::allocator<ft::pair<const Key, T> >			allocator_type;
+			typedef std::allocator<ft::node<Key, T> >				node_allocator_type;
+			typedef ft::node<Key, T>								node_type;
 
 			/*-------------------------- Constructor --------------------------*/
 
-			rb_tree(const key_compare &cmp = key_compare(), const allocator_type &alloc = allocator_type(), const node_allocator_type &nalloc = node_allocator_type())
+			rb_tree(const key_compare &cmp = key_compare(), const allocator_type &alloc = allocator_type(), const node_allocator_type &nalloc = node_allocator_type()) // a tester le void
 			: _cmp(cmp), _alloc(alloc), _nalloc(nalloc)
 			{
 				_root = _nalloc.allocate(1);
@@ -72,8 +72,8 @@ namespace ft
 
 			key_compare				get_cmp(void) const { return (_cmp); }
 			node_type				*get_root(void) const { return (_root); }
-			allocator_type			*get_alloc(void) const { return (_alloc); }
-			node_allocator_type		*get_nalloc(void) const { return (_nalloc); }
+			allocator_type			get_alloc(void) const { return (_alloc); }
+			node_allocator_type		get_nalloc(void) const { return (_nalloc); }
 
 			/*-------------------------- Insert ----------------------------*/
 
@@ -458,10 +458,6 @@ namespace ft
 
 			void	copy_node(node_type *a, node_type *b)
 			{
-				node_type	*tmp_p = b->parent;
-				node_type	*tmp_l = b->left;
-				node_type	*tmp_r = b->right;
-
 				if (a != _root)
 					a == a->parent->left ? a->parent->left = b : a->parent->right = b;
 				else

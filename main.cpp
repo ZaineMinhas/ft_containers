@@ -90,10 +90,27 @@ int		main(void)
 	// std::cout << "del : " << map.erase(666) << std::endl;
 	// map.aff_tree();
 
+	// map2.aff_node(map2.lower_bound(70).get_node());
+	// map2.aff_node(map2.upper_bound(70).get_node());
+
+	// ft::map<int, char>::iterator	it(map2.begin());
+	// ft::map<int, char>::iterator	ite(map2.end());
+
+	// map2.aff_node(it);
+	// map2.aff_tree();
+	// map2.erase(it);
+	// map2.erase(it++);
+	// map2.aff_node(it);
+	// map2.erase(--ite);
+	// map2.aff_tree();
+
 	std::cout << "--- STOP ---\n";
+	map2[3] = 67;
 	std::cout << "size : " << map2.size() << std::endl;
 	std::cout << "empty : " << map2.empty() << std::endl;
-	map2[3] = 67;
+	ft::map<int, char> map3;
+	map3.begin();
+	map3[1] = 67;
 	map2.aff_tree();
 
 	return (0);
