@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/30 18:19:06 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/31 16:43:10 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ namespace ft
 			/*-------------------------- Constructor --------------------------*/
 
 			rb_tree(const key_compare &cmp = key_compare(), const allocator_type &alloc = allocator_type(), const node_allocator_type &nalloc = node_allocator_type()) // a tester le void
-			: _cmp(cmp), _alloc(alloc), _nalloc(nalloc)
+			: _cmp(cmp), _alloc(alloc), _nalloc(nalloc), _size(0)
 			{
 				_root = _nalloc.allocate(1);
 				_alloc.construct(&_root->data, value_type());
@@ -70,6 +70,7 @@ namespace ft
 
 			/*--------------------------- Getters -----------------------------*/
 
+			size_t					get_size(void) const { return (_size); }
 			key_compare				get_cmp(void) const { return (_cmp); }
 			node_type				*get_root(void) const { return (_root); }
 			allocator_type			get_alloc(void) const { return (_alloc); }
@@ -86,6 +87,7 @@ namespace ft
 					finded->double_black = true;
 					return (finded);
 				}
+				_size++;
 				if (!_root)
 				{
 					_root = new_node(val, BLACK, NULL);
@@ -111,6 +113,7 @@ namespace ft
 				node_type	*to_del = to_find(val);
 				if (to_del->data.first != val)
 					return (false);
+				_size--;
 				if (!to_del->left && !to_del->right)
 				{
 					if (to_del->color == RED || to_del == _root)
@@ -223,11 +226,24 @@ namespace ft
 				return (to_find);
 			}
 
+			void	swap(rb_tree &tree)
+			{
+				node_type	*tmp_r = _root;
+				size_t		tmp_s = _size;
+
+				_root = tree.get_root();
+				_size = tree.get_size();
+
+				tree._root = tmp_r;
+				tree._size = tmp_s;
+			}
+
 		private:
 			node_type				*_root;
 			key_compare				_cmp;
 			allocator_type			_alloc;
 			node_allocator_type		_nalloc;
+			size_t					_size;
 
 			/*-------------------------- Modifiers ----------------------------*/
 
@@ -272,6 +288,7 @@ namespace ft
 						_root = NULL;
 					to_del = NULL;
 				}
+				_size = 0;
 			}
 
 			void	rot_left(node_type *node)

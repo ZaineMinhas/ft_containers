@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 17:50:39 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/30 19:52:30 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/31 16:40:34 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,15 +58,15 @@ namespace ft
 			/*-------------------------- Constructor --------------------------*/
 
 			map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
-			: _cmp(comp), _alloc(alloc), _size(0), _tree(rb_tree<key_type, mapped_type>()) {}
+			: _cmp(comp), _alloc(alloc), _tree(rb_tree<key_type, mapped_type>()) {}
 
 			template <class InputIterator>
 			map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type& alloc = allocator_type())
-			: _cmp(comp), _alloc(alloc), _size(0), _tree(rb_tree<key_type, mapped_type>())
+			: _cmp(comp), _alloc(alloc), _tree(rb_tree<key_type, mapped_type>())
 			{ insert(first, last); }
 
 			map(const map &x)
-			: _cmp(x.key_comp()), _alloc(x.get_allocator()), _size(x.size()), _tree(rb_tree<key_type, mapped_type>())
+			: _cmp(x.key_comp()), _alloc(x.get_allocator()), _tree(rb_tree<key_type, mapped_type>())
 			{
 				const_iterator	it(x.begin());
 				const_iterator	ite(x.end());
@@ -115,8 +115,8 @@ namespace ft
 
 			/*-------------------------- Capacity -----------------------------*/
 
-			bool		empty(void) const { return (!_size); }
-			size_type	size(void) const { return (_size); }
+			bool		empty(void) const { return (!size()); }
+			size_type	size(void) const { return (_tree.get_size()); }
 			size_type	max_size(void) const { return (_tree.get_nalloc().max_size()); }
 
 			/*------------------------ Element acces --------------------------*/
@@ -134,7 +134,6 @@ namespace ft
 					it.get_node()->double_black = false;
 					return (ft::make_pair(it, false));
 				}
-				_size++;
 				return (ft::make_pair(it, true));
 			}
 
@@ -164,7 +163,6 @@ namespace ft
 			{
 				if (empty() || !_tree.del_node(k))
 					return (0);
-				_size--;
 				return (1);
 			}
 
@@ -174,21 +172,9 @@ namespace ft
 					erase(first++);
 			}
 
-			void	swap(map &x)
-			{
-				map<key_type, mapped_type>	tmp(*this);
-				*this = x;
-				x = tmp;
-			}
+			void	swap(map &x) { _tree.swap(x._tree); }
 
-			void	clear(void)
-			{
-				if (!empty())
-				{
-					_tree.~rb_tree();
-					_size = 0;
-				}
-			}
+			void	clear(void) { _tree.~rb_tree(); }
 
 			/*-------------------------- Observers ----------------------------*/
 
@@ -307,7 +293,6 @@ namespace ft
 		private:
 			key_compare		_cmp;
 			allocator_type	_alloc;
-			size_type		_size;
 			tree_type		_tree;
 
 			

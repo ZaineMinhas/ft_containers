@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 16:39:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/30 19:21:55 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/08/31 18:42:59 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,7 +326,8 @@ namespace ft
 		public:
 			typedef T				value_type;
 			typedef	node			node_type;
-			typedef	node&			reference;
+			typedef value_type*		pointer;
+			typedef	value_type&		reference;
 			typedef std::ptrdiff_t	difference_type;
 
 		/*----- Constructors -----*/
@@ -477,7 +478,7 @@ namespace ft
 
 	template<class L_T, class R_T, class L_node, class R_node>
 	bool	operator!=(ft::tree_iterator<L_T, L_node> const &lhs, ft::tree_iterator<R_T, R_node> const &rhs)
-	{ return (lhs.get_node() != rhs.get_node()); }
+	{ return (!(lhs == rhs)); }
 
 }
 
