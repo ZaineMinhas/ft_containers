@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/31 16:43:10 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/02 18:55:21 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,18 +51,8 @@ namespace ft
 
 			/*-------------------------- Constructor --------------------------*/
 
-			rb_tree(const key_compare &cmp = key_compare(), const allocator_type &alloc = allocator_type(), const node_allocator_type &nalloc = node_allocator_type()) // a tester le void
-			: _cmp(cmp), _alloc(alloc), _nalloc(nalloc), _size(0)
-			{
-				_root = _nalloc.allocate(1);
-				_alloc.construct(&_root->data, value_type());
-				_root->parent = NULL;
-				_root->left = NULL;
-				_root->right = NULL;
-				_root->color = BLACK;
-				_root->double_black = false;
-				_root = NULL;
-			}
+			rb_tree(const key_compare &cmp = key_compare(), const allocator_type &alloc = allocator_type(), const node_allocator_type &nalloc = node_allocator_type())
+			: _root(NULL), _cmp(cmp), _alloc(alloc), _nalloc(nalloc), _size(0) {}
 
 			/*-------------------------- Destructor ---------------------------*/
 
