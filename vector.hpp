@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/25 15:47:57 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/02 17:38:14 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,12 @@ namespace ft
 
 			/*-------------------------- Constructor --------------------------*/
 
-			explicit vector(const allocator_type &alloc = allocator_type()) : _alloc(alloc), _capacity(0), _size(0) {
-				_vector = _alloc.allocate(0);
-			}
+			explicit vector(const allocator_type &alloc = allocator_type())
+			: _alloc(alloc), _capacity(0), _size(0)
+			{ _vector = _alloc.allocate(0); }
 
-			explicit vector(size_type n, const value_type &val = value_type(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _capacity(n), _size(n)
+			explicit vector(size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type())
+			: _alloc(alloc), _capacity(n), _size(n)
 			{
 				_vector = _alloc.allocate(_capacity);
 				for (size_type i = 0; i < _size; i++)
@@ -49,7 +50,8 @@ namespace ft
 			}
 
 			template <class InputIterator>
-			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = NULL) : _alloc(alloc),  _capacity(0), _size(0)
+			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = NULL)
+			: _alloc(alloc),  _capacity(0), _size(0)
 			{
 				InputIterator tmp = first;
 				while (tmp++ != last)
@@ -133,7 +135,7 @@ namespace ft
 
 			bool		empty() const { return (!_size); }
 
-			void	reserve(size_type n)
+			void		reserve(size_type n)
 			{
 				if (n > this->max_size())
 					throw (std::out_of_range("vector: out of range"));
@@ -348,31 +350,24 @@ namespace ft
 	/*--------------------- relational operators ----------------------*/
 
 	template <class T, class Alloc>
-	bool	operator==(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
+	bool	operator==(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 	{
 		if (lhs.size() != rhs.size())
 			return (false);
-		for (typename vector<T,Alloc>::size_type i = 0; i < lhs.size(); i++)
+		for (typename vector<T, Alloc>::size_type i = 0; i < lhs.size(); i++)
 			if (lhs[i] != rhs[i])
 				return (false);
 		return (true);
 	}
 
 	template <class T, class Alloc>
-	bool	operator!=(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
-	{
-		if (lhs.size() != rhs.size())
-			return (true);
-		for (typename vector<T,Alloc>::size_type i = 0; i < lhs.size(); i++)
-			if (lhs[i] != rhs[i])
-				return (true);
-		return (false);
-	}
+	bool	operator!=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{ return (!(lhs == rhs)); }
 
 	template <class T, class Alloc>
-	bool	operator<(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
+	bool	operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 	{
-		for (typename vector<T,Alloc>::size_type i = 0; i < lhs.size() && i < rhs.size(); i++)
+		for (typename vector<T, Alloc>::size_type i = 0; i < lhs.size() && i < rhs.size(); i++)
 		{
 			if (lhs[i] < rhs[i])
 				return (true);
@@ -385,44 +380,21 @@ namespace ft
 	}
 
 	template <class T, class Alloc>
-	bool	operator<=(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
-	{
-		if (lhs < rhs || lhs == rhs)
-			return (true);
-		return (false);
-	}
+	bool	operator<=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{ return (!(rhs < lhs)); }
 
 	template <class T, class Alloc>
-	bool	operator>(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
-	{
-		for (typename vector<T,Alloc>::size_type i = 0; i < lhs.size() && i < rhs.size(); i++)
-		{
-			if (lhs[i] > rhs[i])
-				return (true);
-			else if (lhs[i] < rhs[i])
-				return (false);
-		}
-		if (lhs.size() > rhs.size())
-			return (true);
-		return (false);
-	}
+	bool	operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{ return (rhs < lhs); }
 
 	template <class T, class Alloc>
-	bool	operator>=(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
-	{
-		if (lhs > rhs || lhs == rhs)
-			return (true);
-		return (false);
-	}
+	bool	operator>=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{ return (!(lhs < rhs)); }
 
 	/*----------------------------- Swap ------------------------------*/
 
 	template <class T, class Alloc>
-	void	swap(vector<T,Alloc> &x, vector<T,Alloc> &y)
-	{
-		vector<T,Alloc>	tmp(x);
-		x = y;
-		y = tmp;
-	}
+	void	swap(vector<T, Alloc> &x, vector<T, Alloc> &y)
+	{ x.swap(y); }
 }
 #endif

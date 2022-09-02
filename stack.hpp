@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 19:09:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/25 15:47:50 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/02 17:29:24 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,27 +54,27 @@ namespace ft
 	/*--------------------- relational operators ----------------------*/
 
 	template <class T, class Container>
-  	bool	operator==(const stack<T,Container>& lhs, const stack<T,Container>& rhs)
+  	bool	operator==(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
 	{ return (lhs.getContainer() == rhs.getContainer()); }
 
 	template <class T, class Container>
-	bool	operator!=(const stack<T,Container>& lhs, const stack<T,Container>& rhs)
+	bool	operator!=(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
 	{ return (lhs.getContainer() != rhs.getContainer()); }
 
 	template <class T, class Container>
-	bool	operator<(const stack<T,Container>& lhs, const stack<T,Container>& rhs)
+	bool	operator<(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
 	{ return (lhs.getContainer() < rhs.getContainer()); }
 
 	template <class T, class Container>
-	bool	operator<=(const stack<T,Container>& lhs, const stack<T,Container>& rhs)
+	bool	operator<=(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
 	{ return (lhs.getContainer() <= rhs.getContainer()); }
 
 	template <class T, class Container>
-	bool	operator>(const stack<T,Container>& lhs, const stack<T,Container>& rhs)
+	bool	operator>(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
 	{ return (lhs.getContainer() > rhs.getContainer()); }
 
 	template <class T, class Container>
-	bool	operator>=(const stack<T,Container>& lhs, const stack<T,Container>& rhs)
+	bool	operator>=(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
 	{ return (lhs.getContainer() >= rhs.getContainer()); }
 }
 

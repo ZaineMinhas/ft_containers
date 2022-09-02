@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 17:50:39 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/31 16:40:34 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/02 17:26:25 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ namespace ft
 			: _cmp(comp), _alloc(alloc), _tree(rb_tree<key_type, mapped_type>()) {}
 
 			template <class InputIterator>
-			map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type& alloc = allocator_type())
+			map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type& alloc = allocator_type(), typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 			: _cmp(comp), _alloc(alloc), _tree(rb_tree<key_type, mapped_type>())
 			{ insert(first, last); }
 
@@ -147,7 +147,7 @@ namespace ft
 			}
 
 			template <class InputIterator>
-			void	insert(InputIterator first, InputIterator last)
+			void	insert(InputIterator first, InputIterator last, typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 			{
 				while (first != last)
 				{
@@ -287,8 +287,8 @@ namespace ft
 
 			/*---------------------------- Utils ------------------------------*/
 
-			void	aff_tree(void) const { _tree.aff_tree(); }
-			void	aff_node(iterator it) const { _tree.aff_node(it.get_node()); }
+			// void	aff_tree(void) const { _tree.aff_tree(); }
+			// void	aff_node(iterator it) const { _tree.aff_node(it.get_node()); }
 
 		private:
 			key_compare		_cmp;
@@ -302,7 +302,7 @@ namespace ft
 	/*--------------------- relational operators ----------------------*/
 
 	template <class Key, class T, class Compare, class Alloc>
-	bool operator==(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs)
+	bool operator==(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
 	{
 		if (lhs.size() != rhs.size())
 			return (false);
@@ -321,23 +321,23 @@ namespace ft
 	}
 
 	template <class Key, class T, class Compare, class Alloc>
-	bool	operator!=(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs)
+	bool	operator!=(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
 	{ return (!(lhs == rhs)); }
 
 	template <class Key, class T, class Compare, class Alloc>
-	bool	operator<(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs)
+	bool	operator<(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
 	{ return (lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())); }
 
 	template <class Key, class T, class Compare, class Alloc>
-	bool	operator<=(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs)
+	bool	operator<=(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
 	{ return (!(rhs < lhs)); }
 
 	template <class Key, class T, class Compare, class Alloc>
-	bool	operator>(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs)
+	bool	operator>(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
 	{ return (rhs < lhs); }
 
 	template <class Key, class T, class Compare, class Alloc>
-	bool	operator>=(const map<Key, T, Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs)
+	bool	operator>=(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
 	{ return (!(lhs < rhs)); }
 
 	/*---------------------------- swap -------------------------------*/

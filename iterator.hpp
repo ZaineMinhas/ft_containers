@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 16:39:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/08/31 18:42:59 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/02 16:13:24 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,33 @@ namespace ft
 		typedef Pointer		pointer;
 		typedef Reference	reference;
 		typedef Category	iterator_category;
+	};
+
+	template <class Iterator> class iterator_traits
+	{
+		typedef typename Iterator::difference_type		difference_type;
+		typedef typename Iterator::value_type			value_type;
+		typedef typename Iterator::pointer				pointer;
+		typedef typename Iterator::reference				reference;
+		typedef typename Iterator::iterator_category		iterator_category;
+	};
+
+	template <class T> class iterator_traits<T*>
+	{
+		typedef std::ptrdiff_t				difference_type;
+		typedef T							value_type;
+		typedef T*							pointer;
+		typedef T&							reference;
+		typedef random_access_iterator_tag	iterator_category;
+	};
+
+	template <class T> class iterator_traits<const T*>
+	{
+		typedef std::ptrdiff_t				difference_type;
+		typedef T							value_type;
+		typedef const T*					pointer;
+		typedef const T&					reference;
+		typedef random_access_iterator_tag	iterator_category;
 	};
 
 	/*-------------RANDOM ACCESS ITERATOR-------------*/
