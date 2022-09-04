@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/09/03 19:15:28 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/05 00:03:37 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,17 +52,26 @@ namespace ft
 			/*-------------------------- Constructor --------------------------*/
 
 			rb_tree(const key_compare &cmp = key_compare(), const allocator_type &alloc = allocator_type(), const node_allocator_type &nalloc = node_allocator_type())
-			: _root(NULL), _cmp(cmp), _alloc(alloc), _nalloc(nalloc), _size(0) {}
+			: _leaf(NULL), _cmp(cmp), _alloc(alloc), _nalloc(nalloc), _size(0)
+			{
+				_leaf = new_node(ft::make_pair(_size, T()), BLACK, NULL);
+				_root = _leaf;
+			}
 
 			/*-------------------------- Destructor ---------------------------*/
 
-			~rb_tree(void) { destroyer(_root); }
+			~rb_tree(void)
+			{
+				destroyer(_root);
+				destroy_node(_leaf);
+			}
 
 			/*--------------------------- Getters -----------------------------*/
 
 			size_t					get_size(void) const { return (_size); }
 			key_compare				get_cmp(void) const { return (_cmp); }
 			node_type				*get_root(void) const { return (_root); }
+			node_type				*get_leaf(void) const { return (_leaf); }
 			allocator_type			get_alloc(void) const { return (_alloc); }
 			node_allocator_type		get_nalloc(void) const { return (_nalloc); }
 
@@ -72,13 +81,14 @@ namespace ft
 			{
 				node_type	*finded = to_find(val.first);
 
-				if (finded && finded->data.first == val.first)
+				if (finded != _leaf && finded->data.first == val.first)
 				{
 					finded->double_black = true;
 					return (finded);
 				}
 				_size++;
-				if (!_root)
+				update_leaf();
+				if (_root == _leaf)
 				{
 					_root = new_node(val, BLACK, NULL);
 					return (_root);
@@ -104,7 +114,8 @@ namespace ft
 				if (to_del->data.first != val)
 					return (false);
 				_size--;
-				if (!to_del->left && !to_del->right)
+				update_leaf();
+				if (to_del->left == _leaf && to_del->right == _leaf)
 				{
 					if (to_del->color == RED || to_del == _root)
 						destroy_node(to_del);
@@ -120,10 +131,10 @@ namespace ft
 				}
 				else
 				{
-					node_type	*tmp = to_del->left ? maximum(to_del->left) : minimum(to_del->right);
-					if (tmp->left || tmp->right)
+					node_type	*tmp = to_del->left != _leaf ? maximum(to_del->left) : minimum(to_del->right);
+					if (tmp->left != _leaf || tmp->right != _leaf)
 					{
-						if (tmp->left)
+						if (tmp->left != _leaf)
 						{
 							switch_color(tmp->left);
 							tmp->left->parent = tmp->parent;
@@ -141,7 +152,7 @@ namespace ft
 					{
 						if (tmp->color == RED)
 						{
-							tmp == tmp->parent->left ? tmp->parent->left = NULL : tmp->parent->right = NULL;
+							tmp == tmp->parent->left ? tmp->parent->left = _leaf : tmp->parent->right = _leaf;
 							copy_node(to_del, tmp);
 						}
 						else
@@ -180,14 +191,14 @@ namespace ft
 
 			node_type	*minimum(node_type* x) const
 			{
-				while (x->left)
+				while (x != _leaf && x->left != _leaf)
 					x = x->left;
 				return (x);
 			}
 
 			node_type	*maximum(node_type* x) const
 			{
-				while (x->right)
+				while (x != _leaf &&x->right != _leaf)
 					x = x->right;
 				return (x);
 			}
@@ -196,17 +207,17 @@ namespace ft
 			{
 				node_type	*to_find = _root;
 
-				while (to_find)
+				while (to_find != _leaf)
 				{
 					if (_cmp(val, to_find->data.first))
 					{
-						if (!to_find->left)
+						if (to_find->left == _leaf)
 							return (to_find);
 						to_find = to_find->left;
 					}
 					else if (_cmp(to_find->data.first, val))
 					{
-						if (!to_find->right)
+						if (to_find->right == _leaf)
 							return (to_find);
 						to_find = to_find->right;
 					}
@@ -219,17 +230,37 @@ namespace ft
 			void	swap(rb_tree &tree)
 			{
 				node_type	*tmp_r = _root;
+				node_type	*tmp_l = _leaf;
 				size_t		tmp_s = _size;
 
 				_root = tree.get_root();
+				_leaf = tree.get_leaf();
 				_size = tree.get_size();
 
 				tree._root = tmp_r;
+				tree._leaf = tmp_l;
 				tree._size = tmp_s;
+			}
+
+			void	destroyer(node_type *to_del)
+			{
+				if (to_del != _leaf)
+				{
+					destroyer(to_del->left);
+					destroyer(to_del->right);
+					_alloc.destroy(&to_del->data);
+					_nalloc.deallocate(to_del, 1);
+					if (to_del == _root)
+						_root = _leaf;
+					to_del = _leaf;
+				}
+				_size = 0;
+				update_leaf();
 			}
 
 		private:
 			node_type				*_root;
+			node_type				*_leaf;
 			key_compare				_cmp;
 			allocator_type			_alloc;
 			node_allocator_type		_nalloc;
@@ -245,8 +276,8 @@ namespace ft
 				_alloc.construct(&node->data, val);
 				node->parent = parent;
 				node->color = color;
-				node->left = NULL;
-				node->right = NULL;
+				node->left = _leaf;
+				node->right = _leaf;
 				node->double_black = false;
 				return (node);
 			}
@@ -254,31 +285,16 @@ namespace ft
 			void	destroy_node(node_type *node)
 			{
 				if (node == _root)
-					_root = NULL;
+					_root = _leaf;
 				else
 				{
-					if (node->parent && node == node->parent->left)
-						node->parent->left = NULL;
-					else if (node->parent && node == node->parent->right)
-						node->parent->right = NULL;
+					if (node->parent != _leaf && node == node->parent->left)
+						node->parent->left = _leaf;
+					else if (node->parent != _leaf && node == node->parent->right)
+						node->parent->right = _leaf;
 				}
 				_alloc.destroy(&node->data);
 				_nalloc.deallocate(node, 1);
-			}
-
-			void	destroyer(node_type *to_del)
-			{
-				if (to_del)
-				{
-					destroyer(to_del->left);
-					destroyer(to_del->right);
-					_alloc.destroy(&to_del->data);
-					_nalloc.deallocate(to_del, 1);
-					if (to_del == _root)
-						_root = NULL;
-					to_del = NULL;
-				}
-				_size = 0;
 			}
 
 			void	rot_left(node_type *node)
@@ -329,12 +345,18 @@ namespace ft
 
 			void	switch_color(node_type *node)
 			{
-				if (!node)
+				if (!node || node == _leaf)
 					return ;
 				if (node->color == BLACK)
 					node->color = RED;
 				else
 					node->color = BLACK;
+			}
+
+			void	update_leaf(void)
+			{
+				_alloc.destroy(&_leaf->data);
+				_alloc.construct(&_leaf->data, ft::make_pair(_size, T()));
 			}
 
 			/*--------------------------- Balance ----------------------------*/
@@ -344,7 +366,7 @@ namespace ft
 				if (node == _root || node->parent->color == BLACK)
 					return (node);
 				node_type	*uncle = get_uncle(node);
-				if (uncle && uncle->color == RED)
+				if (uncle != _leaf && uncle->color == RED)
 				{
 					switch_color(uncle);
 					switch_color(node->parent);
@@ -397,7 +419,7 @@ namespace ft
 				else
 				{
 					node_type	*far_schild = get_far_schild(db);
-					if (far_schild && far_schild->color == RED)
+					if (far_schild != _leaf && far_schild->color == RED)
 					{
 						sibling->color = db->parent->color;
 						db->parent->color = BLACK;
@@ -409,7 +431,7 @@ namespace ft
 					else
 					{
 						node_type	*near_schild = get_near_schild(db);
-						if (near_schild && near_schild->color == RED)
+						if (near_schild != _leaf && near_schild->color == RED)
 						{
 							near_schild->color = sibling->color;
 							sibling->color = RED;
@@ -434,8 +456,8 @@ namespace ft
 
 			node_type	*get_uncle(node_type *node) const
 			{
-				if (node == _root || node->parent == _root || !node)
-					return (NULL);
+				if (node == _root || node->parent == _root || node == _leaf)
+					return (_leaf);
 				if (node->parent == node->parent->parent->left)
 					return (node->parent->parent->right);
 				else
@@ -472,14 +494,14 @@ namespace ft
 				b->parent = a->parent;
 				b->left = a->left;
 				b->right = a->right;
-				if (b->left)
+				if (b->left != _leaf)
 					b->left->parent = b;
-				if (b->right)
+				if (b->right != _leaf)
 					b->right->parent = b;
 				b->color = a->color;
 				_alloc.destroy(&a->data);
 				_nalloc.deallocate(a, 1);
-				a = NULL;
+				a = _leaf;
 			}
 
 			bool	joestar_legacy(node_type *Jotaro, node_type *Joseph, node_type *Jonathan) const
@@ -492,7 +514,7 @@ namespace ft
 			void	get_aff_tree(node_type *node, int space) const
 			{
 				int	i;
-				if(node)
+				if(node != _leaf)
 				{
 					space += 10;
 					get_aff_tree(node->right, space);

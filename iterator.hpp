@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 16:39:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/09/03 19:16:09 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/05 00:03:07 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -359,9 +359,9 @@ namespace ft
 
 		/*----- Constructors -----*/
 
-			tree_iterator(void) : _node(NULL), _root(NULL) {}
-			tree_iterator(node_type *nod, node_type *root) : _node(nod), _root(root) {}
-			tree_iterator(const tree_iterator<value_type, node_type> &it) : _node(it.get_node()), _root(it.get_root()) {}
+			tree_iterator(void) : _node(NULL), _leaf(NULL) {}
+			tree_iterator(node_type *nod, node_type *leaf) : _node(nod), _leaf(leaf) {}
+			tree_iterator(const tree_iterator<value_type, node_type> &it) : _node(it.get_node()), _leaf(it.get_leaf()) {}
 
 			/*----- Destructor -----*/
 
@@ -371,20 +371,20 @@ namespace ft
 
 			tree_iterator	&operator=(const tree_iterator &it)
 			{
-				if (_node != it.get_node())
-					_node = it.get_node();
+				_node = it.get_node();
+				_leaf = it.get_leaf();
 				return (*this);
 			}
 
 			/*----- Const operator -----*/
 
 			operator	tree_iterator<const value_type, node>(void) const
-			{ return (tree_iterator<const value_type, node>(_node, _root)); }
+			{ return (tree_iterator<const value_type, node>(_node, _leaf)); }
 
 			/*----- Getters -----*/
 
 			node_type	*get_node(void) const { return (_node); }
-			node_type	*get_root(void) const { return (_root); }
+			node_type	*get_leaf(void) const { return (_leaf); }
 
 			/*----- Dereferenced value -----*/
 
@@ -405,7 +405,7 @@ namespace ft
 			{
 				node_type	*tmp = _node;
 				_node = next(_node);
-				return (tree_iterator(tmp, _root));
+				return (tree_iterator(tmp, _leaf));
 			}
 
 			/*----- Pre decrement operator -----*/
@@ -422,7 +422,7 @@ namespace ft
 			{
 				node_type	*tmp = _node;
 				_node = prev(_node);
-				return (tree_iterator(tmp, _root));
+				return (tree_iterator(tmp, _leaf));
 			}
 
 			/*----- Utils -----*/
@@ -441,28 +441,35 @@ namespace ft
 
 			node_type	*next(node_type *nod)
 			{
-				node_type	*tmp;
+				node_type	*tmp = nod;
+				while (tmp->parent)
+					tmp = tmp->parent;
+				if (nod == _leaf)
+					return (maximum(tmp));
 
-				if (!nod->right)
+				if (nod->right == _leaf)
 				{
 					tmp = nod;
 					while (tmp->parent && tmp == tmp->parent->right)
 						tmp = tmp->parent;
 					tmp = tmp->parent;
-					return (tmp);
+					return (!tmp ? _leaf : tmp);
 				}
 				tmp = nod->right;
-				while (tmp->left)
+				while (tmp->left != _leaf)
 					tmp = tmp->left;
-				return (tmp);
+				return (!tmp ? _leaf : tmp);
 			}
 
 			node_type	*prev(node_type *nod)
 			{
-				if (!nod)
-					return (maximum(_root));
-				node_type	*tmp;
-				if (!nod->left)
+				node_type	*tmp = nod;
+				while (tmp->parent)
+					tmp = tmp->parent;
+				if (nod == _leaf)
+					return (maximum(tmp));
+
+				if (nod->left == _leaf)
 				{
 					tmp = nod;
 					while (tmp->parent && tmp == tmp->parent->left)
@@ -471,27 +478,27 @@ namespace ft
 					return (tmp);
 				}
 				tmp = nod->left;
-				while (tmp->right)
+				while (tmp->right != _leaf)
 					tmp = tmp->right;
 				return (tmp);
 			}
 
 		private:
 			node_type	*_node;
-			node_type	*_root;
+			node_type	*_leaf;
 
 			/*----- Utils -----*/
 
 			node_type	*minimum(node_type* x) const
 			{
-				while (x->left)
+				while (x->left != _leaf)
 					x = x->left;
 				return (x);
 			}
 
 			node_type	*maximum(node_type* x) const
 			{
-				while (x->right)
+				while (x->right != _leaf)
 					x = x->right;
 				return (x);
 			}

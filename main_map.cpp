@@ -51,7 +51,6 @@ int	main(void)
 		NAMESPACE::map<int, char>::reverse_iterator	it2(map2.rbegin());	// REVERSE ITERATOR
 		NAMESPACE::map<int, char>::reverse_iterator	ite2(map2.rend());
 
-		std::cout << "SALUT " << it2->second << std::endl;
 		std::cout << "PRINT WITH REVERSE ITERATOR :" << std::endl;
 		for (; it2 != ite2; it2++)
 			std::cout << "[" << it2->first << "|" << it2->second << "] ";
@@ -226,8 +225,7 @@ int	main(void)
 		std::cout << "DID WE FOUND 8 : ";
 		std::cout << "[" << find1->first << "|" << find1->second << "]" << std::endl;
 		std::cout << "DID WE FOUND 80 : ";
-		// std::cout << "[" << find2->first << "|" << find2->second << "] " << std::endl;;
-		// map2.erase(map2.find(80));
+		std::cout << "[" << find2->first << "|" << find2->second << "] " << std::endl;
 	}
 
 	std::cout << "-----------------------------------------------------------" << std::endl;
@@ -244,7 +242,7 @@ int	main(void)
 
 		NAMESPACE::map<int, char>::iterator	lb3(map2.lower_bound(15));	// LOWER_BOUND
 		std::cout << "LOWER BOUND OF 15 : ";
-		// std::cout << "[" << lb3->first << "|" << lb3->second << "]" << std::endl;
+		std::cout << "[" << lb3->first << "|" << lb3->second << "]" << std::endl;
 	}
 
 	std::cout << "-----------------------------------------------------------" << std::endl;
@@ -261,8 +259,51 @@ int	main(void)
 
 		NAMESPACE::map<int, char>::iterator	lb3(map2.upper_bound(15));	// UPPER_BOUND
 		std::cout << "UPPER BOUND OF 15 : ";
-		// std::cout << "[" << lb3->first << "|" << lb3->second << "]" << std::endl;
+		std::cout << "[" << lb3->first << "|" << lb3->second << "]" << std::endl;
 	}
+
+	std::cout << "-----------------------------------------------------------" << std::endl;
+
+	{	// RELATIONAL OPERATOR
+
+		NAMESPACE::map<int, char>::iterator	it(map.begin());
+		NAMESPACE::map<int, char>::iterator	ite(map.end());
+		std::cout << "MAP = ";
+		for (; it != ite; it++)
+			std::cout << "[" << it->first << "|" << it->second << "] ";
+		std::cout << std::endl;
+
+		NAMESPACE::map<int, char> map2;
+		for (size_t i = 10; i < 15; i++)
+			map2[i] = 'A' + i;
+		std::cout << "MAP2 = ";
+		NAMESPACE::map<int, char>::iterator	it2(map2.begin());
+		NAMESPACE::map<int, char>::iterator	ite2(map2.end());
+		for (; it2 != ite2; it2++)
+			std::cout << "[" << it2->first << "|" << it2->second << "] ";
+		std::cout << std::endl;
+
+		NAMESPACE::map<int, char> map3(map);
+		std::cout << "MAP3 = ";
+		NAMESPACE::map<int, char>::iterator	it3(map3.begin());
+		NAMESPACE::map<int, char>::iterator	ite3(map3.end());
+		for (; it3 != ite3; it3++)
+			std::cout << "[" << it3->first << "|" << it3->second << "] ";
+		std::cout << std::endl;
+
+		std::cout << "RELATIONAL OPERATOR :" << std::endl << std::endl;
+		std::cout << "- MAP VS MAP2-" << std::endl;
+		std::cout << "== : " << (map == map2) << " | != : " << (map != map2) << std::endl;	// RELATIONAL OPERATOR
+		std::cout << " < : " << (map < map2) << " | >  : " << (map > map2) << std::endl;	// RELATIONAL OPERATOR
+		std::cout << "<= : " << (map <= map2) << " | >= : " << (map >= map2) << std::endl;	// RELATIONAL OPERATOR
+
+		std::cout << "- MAP VS MAP3 -" << std::endl;
+		std::cout << "== : " << (map == map3) << " | != : " << (map != map3) << std::endl;	// RELATIONAL OPERATOR
+		std::cout << " < : " << (map < map3) << " | >  : " << (map > map3) << std::endl;	// RELATIONAL OPERATOR
+		std::cout << "<= : " << (map <= map3) << " | >= : " << (map >= map3) << std::endl;	// RELATIONAL OPERATOR
+	}
+
+	std::cout << "-----------------------------------------------------------" << std::endl;
 
 	return (0);
 }

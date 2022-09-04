@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 17:50:39 by zminhas           #+#    #+#             */
-/*   Updated: 2022/09/03 19:14:56 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/05 00:03:13 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ namespace ft
 
 			/*-------------------------- Destructor ---------------------------*/
 
-			~map(void) { clear(); }
+			~map(void) {}
 
 			/*-------------------------- Operator= ----------------------------*/
 
@@ -93,19 +93,15 @@ namespace ft
 
 			iterator begin(void)
 			{
-				if (!empty())
-					return (iterator(_tree.minimum(_tree.get_root()), _tree.get_root()));
-				return (iterator(NULL, _tree.get_root()));
+				return (iterator(_tree.minimum(_tree.get_root()), _tree.get_leaf()));
 			}
 			const_iterator begin(void) const
 			{
-				if (!empty())
-					return (const_iterator(_tree.minimum(_tree.get_root()), _tree.get_root()));
-				return (const_iterator(NULL, _tree.get_root()));
+				return (const_iterator(_tree.minimum(_tree.get_root()), _tree.get_leaf()));
 			}
 
-			iterator end(void) { return (iterator(NULL, _tree.get_root())); }
-			const_iterator end(void) const { return (const_iterator(NULL, _tree.get_root())); }
+			iterator end(void) { return (iterator(_tree.get_leaf(), _tree.get_leaf())); }
+			const_iterator end(void) const { return (const_iterator(_tree.get_leaf(), _tree.get_leaf())); }
 
 			reverse_iterator rbegin(void) { return (end()); }
 			const_reverse_iterator rbegin(void) const { return (end()); }
@@ -128,7 +124,7 @@ namespace ft
 
 			pair<iterator, bool>	insert(const value_type &val)
 			{
-				iterator	it(_tree.insert(val), _tree.get_root());
+				iterator	it(_tree.insert(val), _tree.get_leaf());
 				if (it.get_node()->double_black)
 				{
 					it.get_node()->double_black = false;
@@ -157,7 +153,9 @@ namespace ft
 			}
 
 			void	erase(iterator position)
-			{ erase(position.get_node()->data.first); }
+			{
+				erase(position->first);
+			}
 
 			size_type	erase(const key_type &k)
 			{
@@ -174,7 +172,7 @@ namespace ft
 
 			void	swap(map &x) { _tree.swap(x._tree); }
 
-			void	clear(void) { _tree.~rb_tree(); }
+			void	clear(void) { _tree.destroyer(_tree.get_root()); }
 
 			/*-------------------------- Observers ----------------------------*/
 
@@ -185,7 +183,7 @@ namespace ft
 
 			iterator find(const key_type &k)
 			{
-				iterator	finded(_tree.to_find(k), _tree.get_root());
+				iterator	finded(_tree.to_find(k), _tree.get_leaf());
 				if (finded.get_node()->data.first == k)
 					return (finded);
 				return (end());
@@ -193,7 +191,7 @@ namespace ft
 
 			const_iterator find(const key_type &k) const
 			{
-				const_iterator	finded(_tree.to_find(k), _tree.get_root());
+				const_iterator	finded(_tree.to_find(k), _tree.get_leaf());
 				if (finded.get_node()->data.first == k)
 					return (finded);
 				return (end());
@@ -201,7 +199,7 @@ namespace ft
 
 			size_type count(const key_type &k) const
 			{
-				iterator	finded(_tree.to_find(k), _tree.get_root());
+				iterator	finded(_tree.to_find(k), _tree.get_leaf());
 				if (finded.get_node()->data.first == k)
 					return (1);
 				return (0);
@@ -212,12 +210,12 @@ namespace ft
 				if (count(k))
 					return (find(k));
 				if (_cmp(k, _tree.minimum(_tree.get_root())->data.first))
-					return (iterator(_tree.minimum(_tree.get_root()), _tree.get_root()));
+					return (iterator(_tree.minimum(_tree.get_root()), _tree.get_leaf()));
 				else if (_cmp(_tree.maximum(_tree.get_root())->data.first, k))
 					return (end());
 				else
 				{
-					iterator	it(_tree.to_find(k), _tree.get_root());
+					iterator	it(_tree.to_find(k), _tree.get_leaf());
 					return (_cmp(k, it->first) ? it : ++it);
 				}
 			}
@@ -227,12 +225,12 @@ namespace ft
 				if (count(k))
 					return (find(k));
 				if (_cmp(k, _tree.minimum(_tree.get_root())->data.first))
-					return (iterator(_tree.minimum(_tree.get_root()), _tree.get_root()));
+					return (iterator(_tree.minimum(_tree.get_root()), _tree.get_leaf()));
 				else if (_cmp(_tree.maximum(_tree.get_root())->data.first, k))
 					return (end());
 				else
 				{
-					const_iterator	it(_tree.to_find(k), _tree.get_root());
+					const_iterator	it(_tree.to_find(k), _tree.get_leaf());
 					return (_cmp(k, it->first) ? it : ++it);
 				}
 			}
@@ -242,12 +240,12 @@ namespace ft
 				if (count(k))
 					return (++find(k));
 				if (_cmp(k, _tree.minimum(_tree.get_root())->data.first))
-					return (iterator(_tree.minimum(_tree.get_root()), _tree.get_root()));
+					return (iterator(_tree.minimum(_tree.get_root()), _tree.get_leaf()));
 				else if (_cmp(_tree.maximum(_tree.get_root())->data.first, k))
 					return (end());
 				else
 				{
-					iterator	it(_tree.to_find(k), _tree.get_root());
+					iterator	it(_tree.to_find(k), _tree.get_leaf());
 					return (_cmp(k, it->first) ? it : ++it);
 				}
 			}
@@ -257,12 +255,12 @@ namespace ft
 				if (count(k))
 					return (++find(k));
 				if (_cmp(k, _tree.minimum(_tree.get_root())->data.first))
-					return (iterator(_tree.minimum(_tree.get_root()), _tree.get_root()));
+					return (iterator(_tree.minimum(_tree.get_root()), _tree.get_leaf()));
 				else if (_cmp(_tree.maximum(_tree.get_root())->data.first, k))
 					return (end());
 				else
 				{
-					const_iterator	it(_tree.to_find(k), _tree.get_root());
+					const_iterator	it(_tree.to_find(k), _tree.get_leaf());
 					return (_cmp(k, it->first) ? it : ++it);
 				}
 			}
@@ -287,8 +285,8 @@ namespace ft
 
 			/*---------------------------- Utils ------------------------------*/
 
-			// void	aff_tree(void) const { _tree.aff_tree(); }
-			// void	aff_node(iterator it) const { _tree.aff_node(it.get_node()); }
+			void	aff_tree(void) const { _tree.aff_tree(); }
+			void	aff_node(iterator it) const { _tree.aff_node(it.get_node()); }
 
 		private:
 			key_compare		_cmp;
@@ -312,7 +310,7 @@ namespace ft
 
 		while (lhs_b != ite)
 		{
-			if (lhs_b.get_node()->data.first != rhs_b.get_node()->data.first)
+			if (lhs_b->first != rhs_b->first)
 				return (false);
 			lhs_b++;
 			rhs_b++;
