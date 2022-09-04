@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 19:09:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/09/02 17:29:24 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/05 00:12:27 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ namespace ft
 
 			stack(const container_type &ctnr = container_type()) : _container(ctnr) {}
 
+			/*--------------------------- Function ----------------------------*/
+
 			bool	empty() const { return (_container.empty()); }
 
 			size_type	size() const { return (_container.size()); }
@@ -41,7 +43,7 @@ namespace ft
 
 			void	pop() { _container.pop_back(); }
 
-			/*-------------------------- Getter --------------------------*/
+			/*---------------------------- Getter -----------------------------*/
 
 			container_type	getContainer(void) const { return (_container); }
 
