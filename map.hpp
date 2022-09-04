@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 17:50:39 by zminhas           #+#    #+#             */
-/*   Updated: 2022/09/05 00:03:13 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/05 00:09:25 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,14 +91,8 @@ namespace ft
 
 			/*-------------------------- Iterators ----------------------------*/
 
-			iterator begin(void)
-			{
-				return (iterator(_tree.minimum(_tree.get_root()), _tree.get_leaf()));
-			}
-			const_iterator begin(void) const
-			{
-				return (const_iterator(_tree.minimum(_tree.get_root()), _tree.get_leaf()));
-			}
+			iterator begin(void) { return (iterator(_tree.minimum(_tree.get_root()), _tree.get_leaf())); }
+			const_iterator begin(void) const { return (const_iterator(_tree.minimum(_tree.get_root()), _tree.get_leaf())); }
 
 			iterator end(void) { return (iterator(_tree.get_leaf(), _tree.get_leaf())); }
 			const_iterator end(void) const { return (const_iterator(_tree.get_leaf(), _tree.get_leaf())); }
@@ -285,8 +279,8 @@ namespace ft
 
 			/*---------------------------- Utils ------------------------------*/
 
-			void	aff_tree(void) const { _tree.aff_tree(); }
-			void	aff_node(iterator it) const { _tree.aff_node(it.get_node()); }
+			// void	aff_tree(void) const { _tree.aff_tree(); }
+			// void	aff_node(iterator it) const { _tree.aff_node(it.get_node()); }
 
 		private:
 			key_compare		_cmp;
