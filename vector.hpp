@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
+/*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/09/02 17:38:14 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/05 20:56:28 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,12 @@ namespace ft
 			void		push_back(const value_type &val)
 			{
 				if (_size + 1 >= _capacity)
-					reserve((_capacity + 1) * 2);
+				{
+					if (!_capacity)
+						reserve(2);
+					else
+						reserve(_capacity * 2);
+				}
 				_vector[_size++] = val;
 			}
 

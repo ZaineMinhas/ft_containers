@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
+/*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 16:39:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/09/05 00:03:07 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/05 16:39:05 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,11 @@ namespace ft
 	class random_access_iterator : public ft::iterator<ft::random_access_iterator_tag, T>
 	{
 		public:
-			typedef	typename ft::iterator<ft::random_access_iterator_tag, T>::value_type		value_type;
-			typedef	typename ft::iterator<ft::random_access_iterator_tag, T>::difference_type	difference_type;
-			typedef	typename ft::iterator<ft::random_access_iterator_tag, T>::pointer			pointer;
-			typedef	typename ft::iterator<ft::random_access_iterator_tag, T>::reference			reference;
-			typedef	typename ft::iterator<ft::random_access_iterator_tag, T>::iterator_category	iterator_category;
+			typedef	typename std::iterator_traits<T*>::value_type			value_type;
+			typedef	typename std::iterator_traits<T*>::difference_type		difference_type;
+			typedef	typename std::iterator_traits<T*>::pointer				pointer;
+			typedef	typename std::iterator_traits<T*>::reference			reference;
+			typedef	typename std::iterator_traits<T*>::iterator_category	iterator_category;
 
 			/*----- Constructors -----*/
 

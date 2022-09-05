@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   red_black_tree.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
+/*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:39:12 by zminhas           #+#    #+#             */
-/*   Updated: 2022/09/05 00:03:37 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/05 15:21:26 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,14 @@ namespace ft
 
 	/*----- RED BLACK TREE STRUCT -----*/
 
-	template <class Key, class T>
+	template <class Key, class T, class Compare = ft::less<Key> >
 	class rb_tree
 	{
 		public:
 			typedef Key												key_type;
 			typedef T												mapped_type;
 			typedef ft::pair<const Key, T>							value_type;
-			typedef ft::less<Key>									key_compare;
+			typedef Compare											key_compare;
 			typedef std::allocator<ft::pair<const Key, T> >			allocator_type;
 			typedef std::allocator<ft::node<Key, T> >				node_allocator_type;
 			typedef ft::node<Key, T>								node_type;

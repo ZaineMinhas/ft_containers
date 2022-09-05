@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   stack.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
+/*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 19:09:36 by zminhas           #+#    #+#             */
-/*   Updated: 2022/09/05 00:12:27 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/05 16:34:19 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,56 +28,70 @@ namespace ft
 
 			/*-------------------------- Constructor --------------------------*/
 
-			stack(const container_type &ctnr = container_type()) : _container(ctnr) {}
+			stack(const container_type &ctnr = container_type()) : c(ctnr) {}
 
 			/*--------------------------- Function ----------------------------*/
 
-			bool	empty() const { return (_container.empty()); }
+			bool	empty() const { return (c.empty()); }
 
-			size_type	size() const { return (_container.size()); }
+			size_type	size() const { return (c.size()); }
 
-			value_type&	top() { return (_container.back()); }
-			const value_type&	top() const { return (_container.back()); }
+			value_type&	top() { return (c.back()); }
+			const value_type&	top() const { return (c.back()); }
 
-			void	push(const value_type& val) { _container.push_back(val); }
+			void	push(const value_type& val) { c.push_back(val); }
 
-			void	pop() { _container.pop_back(); }
+			void	pop() { c.pop_back(); }
 
-			/*---------------------------- Getter -----------------------------*/
-
-			container_type	getContainer(void) const { return (_container); }
-
+		protected:
+			container_type	c;
 
 		private:
-			container_type	_container;
+			template <class Type, class Cont>
+			friend bool	operator==(const stack<Type, Cont>& lhs, const stack<Type, Cont>& rhs);
+
+			template <class Type, class Cont>
+			friend bool	operator!=(const stack<Type, Cont>& lhs, const stack<Type, Cont>& rhs);
+
+			template <class Type, class Cont>
+			friend bool	operator<(const stack<Type, Cont>& lhs, const stack<Type, Cont>& rhs);
+
+			template <class Type, class Cont>
+			friend bool	operator<=(const stack<Type, Cont>& lhs, const stack<Type, Cont>& rhs);
+
+			template <class Type, class Cont>
+			friend bool	operator>(const stack<Type, Cont>& lhs, const stack<Type, Cont>& rhs);
+
+			template <class Type, class Cont>
+			friend bool	operator>=(const stack<Type, Cont>& lhs, const stack<Type, Cont>& rhs);
 	};
 
 	/*--------------------- NON MEMBER FONCTION -----------------------*/
 	/*--------------------- relational operators ----------------------*/
 
 	template <class T, class Container>
-  	bool	operator==(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
-	{ return (lhs.getContainer() == rhs.getContainer()); }
+	bool	operator==(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
+	{ return (lhs.c == rhs.c); }
 
 	template <class T, class Container>
 	bool	operator!=(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
-	{ return (lhs.getContainer() != rhs.getContainer()); }
+	{ return (lhs.c != rhs.c); }
 
 	template <class T, class Container>
 	bool	operator<(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
-	{ return (lhs.getContainer() < rhs.getContainer()); }
+	{ return (lhs.c < rhs.c); }
 
 	template <class T, class Container>
 	bool	operator<=(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
-	{ return (lhs.getContainer() <= rhs.getContainer()); }
+	{ return (lhs.c <= rhs.c); }
 
 	template <class T, class Container>
 	bool	operator>(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
-	{ return (lhs.getContainer() > rhs.getContainer()); }
+	{ return (lhs.c > rhs.c); }
 
 	template <class T, class Container>
 	bool	operator>=(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
-	{ return (lhs.getContainer() >= rhs.getContainer()); }
+	{ return (lhs.c >= rhs.c); }
 }
 
 #endif

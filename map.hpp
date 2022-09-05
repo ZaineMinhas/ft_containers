@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zminhas <zminhas@student.s19.be>           +#+  +:+       +#+        */
+/*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 17:50:39 by zminhas           #+#    #+#             */
-/*   Updated: 2022/09/05 00:09:25 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/05 16:01:07 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ namespace ft
 			typedef Compare													key_compare;
 			typedef Alloc													allocator_type;
 			typedef size_t													size_type;
-			typedef ft::rb_tree<key_type, mapped_type>						tree_type;
+			typedef ft::rb_tree<key_type, mapped_type, key_compare>						tree_type;
 			typedef typename allocator_type::reference						reference;
 			typedef typename allocator_type::pointer						pointer;
 			typedef typename allocator_type::const_pointer					const_pointer;
@@ -58,15 +58,15 @@ namespace ft
 			/*-------------------------- Constructor --------------------------*/
 
 			map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
-			: _cmp(comp), _alloc(alloc), _tree(rb_tree<key_type, mapped_type>()) {}
+			: _cmp(comp), _alloc(alloc), _tree(rb_tree<key_type, mapped_type, key_compare>()) {}
 
 			template <class InputIterator>
 			map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type& alloc = allocator_type(), typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = NULL)
-			: _cmp(comp), _alloc(alloc), _tree(rb_tree<key_type, mapped_type>())
+			: _cmp(comp), _alloc(alloc), _tree(rb_tree<key_type, mapped_type, key_compare>())
 			{ insert(first, last); }
 
 			map(const map &x)
-			: _cmp(x.key_comp()), _alloc(x.get_allocator()), _tree(rb_tree<key_type, mapped_type>())
+			: _cmp(x.key_comp()), _alloc(x.get_allocator()), _tree(rb_tree<key_type, mapped_type, key_compare>())
 			{
 				const_iterator	it(x.begin());
 				const_iterator	ite(x.end());
