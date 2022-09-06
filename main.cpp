@@ -252,7 +252,7 @@ int	main(void)
 			std::cout << std::endl;
 			std::cout << "SIZE : " << vector.size() << std::endl;
 
-			std::cout << std::endl << "- RESIZE 5 -" << std::endl << std::endl;
+			std::cout << "- RESIZE 5 -" << std::endl;
 			vector.resize(5);	// RESIZE
 
 			std::cout << "CONTENT : ";
@@ -261,7 +261,7 @@ int	main(void)
 			std::cout << std::endl;
 			std::cout << "SIZE : " << vector.size() << std::endl;
 
-			std::cout << std::endl << "- RESIZE 15 WITH VAL=99 -" << std::endl << std::endl;
+			std::cout << "- RESIZE 15 WITH VAL=99 -" << std::endl;
 			vector.resize(15, 99);	// RESIZE
 
 			std::cout << "CONTENT : ";
@@ -270,7 +270,7 @@ int	main(void)
 			std::cout << std::endl;
 			std::cout << "SIZE : " << vector.size() << std::endl;
 
-			std::cout << std::endl << "- RESIZE 19 -" << std::endl << std::endl;
+			std::cout << "- RESIZE 19 -" << std::endl;
 			vector.resize(19);	// RESIZE
 
 			std::cout << "CONTENT : ";
@@ -283,22 +283,161 @@ int	main(void)
 		std::cout << "-----------------------------------------------------------" << std::endl;
 
 		{	// INSERT
+			NAMESPACE::vector<int>	vector(10, 5);
 			NAMESPACE::vector<int>	vector2;
 			for (size_t i = 0; i < 10; i++)
 				vector2.push_back(i * 4);
 
-			std::cout << "CONTENT : ";
+			std::cout << "CONTENT A : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << "|SIZE : " << vector.size() << std::endl;
+			std::cout << "CONTENT B : ";
+			for (size_t i = 0; i < vector2.size(); i++)
+				std::cout << vector2[i] << " ";
+			std::cout << "|SIZE : " << vector2.size() << std::endl;
+
+
+			std::cout << std::endl << "- INSERT BEGIN_B AT BEGIN_A + 1 -" << std::endl << std::endl;
+			vector.insert(++(vector.begin()), *vector2.begin());	// INSERT
+
+			std::cout << "CONTENT A : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << "|SIZE : " << vector.size() << std::endl;
+			std::cout << "CONTENT B : ";
+			for (size_t i = 0; i < vector2.size(); i++)
+				std::cout << vector2[i] << " ";
+			std::cout << "|SIZE : " << vector2.size() << std::endl;
+
+			std::cout << std::endl << "- INSERT BEGIN_B + 2 TREE TIME AT BEGIN_A + 2 -" << std::endl << std::endl;
+			vector.insert(++(++(vector.begin())), 3, *++(++(vector2.begin())));	// INSERT
+
+			std::cout << "CONTENT A : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << "|SIZE : " << vector.size() << std::endl;
+			std::cout << "CONTENT B : ";
+			for (size_t i = 0; i < vector2.size(); i++)
+				std::cout << vector2[i] << " ";
+			std::cout << "|SIZE : " << vector2.size() << std::endl;
+
+			std::cout << std::endl << "INSERT B AT THE START OF A -" << std::endl << std::endl;
+			vector.insert(vector.begin(), vector2.begin(), vector2.end());	// INSERT
+
+			std::cout << "CONTENT A : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << "|SIZE : " << vector.size() << std::endl;
+			std::cout << "CONTENT B : ";
+			for (size_t i = 0; i < vector2.size(); i++)
+				std::cout << vector2[i] << " ";
+			std::cout << "|SIZE : " << vector2.size() << std::endl;
+		}
+		std::cout << "-----------------------------------------------------------" << std::endl;
+
+		{	// SWAP
+			NAMESPACE::vector<int>	vector;
+			NAMESPACE::vector<int>	vector2;
+
+			for (size_t i = 0; i < 10; i++)
+				vector.push_back(i * 4);
+			for (size_t i = 0; i < 5; i++)
+				vector2.push_back(i * 5);
+
+			std::cout << "CONTENT A : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << std::endl;
+			std::cout << "SIZE : " << vector.size() << std::endl;
+			std::cout << "CAPACITY : " << vector.capacity() << std::endl;
+			std::cout << std::endl;
+
+			std::cout << "CONTENT B : ";
 			for (size_t i = 0; i < vector2.size(); i++)
 				std::cout << vector2[i] << " ";
 			std::cout << std::endl;
 			std::cout << "SIZE : " << vector2.size() << std::endl;
+			std::cout << "CAPACITY : " << vector2.capacity() << std::endl;
 
+			std::cout << "- SWAP -" << std::endl;
+			vector.swap(vector2);	// SWAP
+
+			std::cout << "CONTENT A : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << std::endl;
+			std::cout << "SIZE : " << vector.size() << std::endl;
+			std::cout << "CAPACITY : " << vector.capacity() << std::endl;
+			std::cout << std::endl;
+
+			std::cout << "CONTENT B : ";
+			for (size_t i = 0; i < vector2.size(); i++)
+				std::cout << vector2[i] << " ";
+			std::cout << std::endl;
+			std::cout << "SIZE : " << vector2.size() << std::endl;
+			std::cout << "CAPACITY : " << vector2.capacity() << std::endl;
+		}
+
+		std::cout << "-----------------------------------------------------------" << std::endl;
+
+		{	// ERASE
 			NAMESPACE::vector<int>	vector;
-			std::cout << "INSERT BEGIN AT BEGIN : ";
-			vector.insert(vector.begin(), *vector2.begin());
-			std::cout << *vector.begin() << std::endl;
-
+			for (size_t i = 0; i < 10; i++)
+				vector.push_back(i * 6);
 			
+			std::cout << "CONTENT : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << "|SIZE : " << vector.size() << std::endl;
+			
+			std::cout << "- ERASE AT BEGIN + 2 -" << std::endl;
+			vector.erase(++(++(vector.begin())));	// ERASE
+
+			std::cout << "CONTENT : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << "|SIZE : " << vector.size() << std::endl;
+
+			std::cout << "- ERASE ALL EXEPT LAST ELEMENT -" << std::endl;
+			vector.erase(vector.begin(), --(vector.end()));	// ERASE
+
+			std::cout << "CONTENT : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << "|SIZE : " << vector.size() << std::endl;
+		}
+
+		std::cout << "-----------------------------------------------------------" << std::endl;
+
+		{	// ASSIGN
+			NAMESPACE::vector<int>	vector;
+			NAMESPACE::vector<int>	vector2;
+			for (size_t i = 0; i < 10; i++)
+				vector.push_back(i * 6);
+			for (size_t i = 0; i < 7; i++)
+				vector2.push_back(i * 2);
+			
+			std::cout << "CONTENT A : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << "|SIZE : " << vector.size() << std::endl;
+			std::cout << "CONTENT B : ";
+			for (size_t i = 0; i < vector2.size(); i++)
+				std::cout << vector2[i] << " ";
+			std::cout << "|SIZE : " << vector2.size() << std::endl;
+
+			std::cout << "- ASSIGN 0 -> 5 OF B IN A -" << std::endl;
+			vector.assign(vector2.begin(), --(--(vector2.end()))); // ASSIGN
+
+			std::cout << "CONTENT A : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << "|SIZE : " << vector.size() << std::endl;
+			std::cout << "CONTENT B : ";
+			for (size_t i = 0; i < vector2.size(); i++)
+				std::cout << vector2[i] << " ";
+			std::cout << "|SIZE : " << vector2.size() << std::endl;
 		}
 
 		std::cout << "-----------------------------------------------------------" << std::endl;

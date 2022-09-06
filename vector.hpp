@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/09/06 16:35:28 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/06 20:31:44 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,16 @@ namespace ft
 			vector	&operator=(const vector &x)
 			{
 				clear();
-				assign(x.begin(), x.end());
+				_alloc.deallocate(_vector, _capacity);
+				_alloc = x.get_allocator();
+ 				_size = x.size();
+				if (_size < x.capacity())
+					_capacity = _size;
+				else
+ 					_capacity = x.capacity();
+ 				_vector = _alloc.allocate(_capacity);
+ 				for (size_type i = 0; i < _size; i++)
+ 					_alloc.construct(_vector + i, x[i]);
 				return (*this);
 			}
 
@@ -184,23 +193,14 @@ namespace ft
 			template <class InputIterator>
   			void		assign(InputIterator first, InputIterator last, typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 			{
-				size_type	size = 0;
+				clear();
 				InputIterator tmp = first;
 				while (tmp++ != last)
-					size++;
-				resize(0);
-				reserve(size);
-				while (size--)
-					_alloc.construct(&_vector[size], *first++);
-				// clear();
-				// InputIterator tmp = first;
-				// while (tmp++ != last)
-				// 	_size++;
-				// if (_size > _capacity)
-				// 	reserve(_size);
-				// std::cout << "YO\n";
-				// for (size_type i = 0; first != last; i++)
-				// 	_alloc.construct(&_vector[i], *first++);
+					_size++;
+				if (_size > _capacity)
+					reserve(_size);
+				for (size_type i = 0; first != last; i++)
+					_alloc.construct(&_vector[i], *first++);
 			}
 
 			void		assign(size_type n, const value_type &val)
