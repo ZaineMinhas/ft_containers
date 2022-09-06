@@ -6,7 +6,7 @@
 /*   By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:15:35 by zminhas           #+#    #+#             */
-/*   Updated: 2022/09/05 20:56:28 by zminhas          ###   ########.fr       */
+/*   Updated: 2022/09/06 16:35:28 by zminhas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,8 @@ namespace ft
 
 			vector	&operator=(const vector &x)
 			{
-				_alloc = x.get_allocator();
-				_capacity = x.capacity();
-				_size = x.size();
-				_vector = _alloc.allocate(_capacity);
-				for (size_type i = 0; i < _size; i++)
-					_alloc.construct(_vector + i, x[i]);
+				clear();
+				assign(x.begin(), x.end());
 				return (*this);
 			}
 
@@ -112,6 +108,8 @@ namespace ft
 
 			void		resize(size_type n, value_type val = value_type())
 			{
+				if (n > max_size())
+					throw(std::length_error("error: vector: resize"));
 				if (n == _size)
 					return ;
 				else if (n < _size)
@@ -138,7 +136,7 @@ namespace ft
 			void		reserve(size_type n)
 			{
 				if (n > this->max_size())
-					throw (std::out_of_range("vector: out of range"));
+					throw (std::length_error("vector: error: reserve"));
 				if (n <= this->_capacity)
 					return ;
 
@@ -186,14 +184,23 @@ namespace ft
 			template <class InputIterator>
   			void		assign(InputIterator first, InputIterator last, typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 			{
-				clear();
+				size_type	size = 0;
 				InputIterator tmp = first;
 				while (tmp++ != last)
-					_size++;
-				if (_size > _capacity)
-					reserve(_size);
-				for (size_type i = 0; first != last; i++)
-					_alloc.construct(&_vector[i], *first++);
+					size++;
+				resize(0);
+				reserve(size);
+				while (size--)
+					_alloc.construct(&_vector[size], *first++);
+				// clear();
+				// InputIterator tmp = first;
+				// while (tmp++ != last)
+				// 	_size++;
+				// if (_size > _capacity)
+				// 	reserve(_size);
+				// std::cout << "YO\n";
+				// for (size_type i = 0; first != last; i++)
+				// 	_alloc.construct(&_vector[i], *first++);
 			}
 
 			void		assign(size_type n, const value_type &val)

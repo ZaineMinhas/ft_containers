@@ -226,6 +226,79 @@ int	main(void)
 
 			std::cout << "FRONT : " << vector.front() << std::endl;	// FRONT
 			std::cout << "BACK : " << vector.back() << std::endl;	// BACK
+
+			std::cout << std::endl << "- POP_BACK -" << std::endl << std::endl;
+			vector.pop_back();	// POP_BACK
+
+			std::cout << "CONTENT : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << std::endl;
+
+			std::cout << "FRONT : " << vector.front() << std::endl;	// FRONT
+			std::cout << "BACK : " << vector.back() << std::endl;	// BACK
+		}
+
+		std::cout << "-----------------------------------------------------------" << std::endl;
+
+		{	// RESIZE
+			NAMESPACE::vector<int>	vector;
+			for (size_t i = 0; i < 10; i++)
+				vector.push_back(i * 3);
+
+			std::cout << "CONTENT : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << std::endl;
+			std::cout << "SIZE : " << vector.size() << std::endl;
+
+			std::cout << std::endl << "- RESIZE 5 -" << std::endl << std::endl;
+			vector.resize(5);	// RESIZE
+
+			std::cout << "CONTENT : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << std::endl;
+			std::cout << "SIZE : " << vector.size() << std::endl;
+
+			std::cout << std::endl << "- RESIZE 15 WITH VAL=99 -" << std::endl << std::endl;
+			vector.resize(15, 99);	// RESIZE
+
+			std::cout << "CONTENT : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << std::endl;
+			std::cout << "SIZE : " << vector.size() << std::endl;
+
+			std::cout << std::endl << "- RESIZE 19 -" << std::endl << std::endl;
+			vector.resize(19);	// RESIZE
+
+			std::cout << "CONTENT : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << std::endl;
+			std::cout << "SIZE : " << vector.size() << std::endl;
+		}
+
+		std::cout << "-----------------------------------------------------------" << std::endl;
+
+		{	// INSERT
+			NAMESPACE::vector<int>	vector2;
+			for (size_t i = 0; i < 10; i++)
+				vector2.push_back(i * 4);
+
+			std::cout << "CONTENT : ";
+			for (size_t i = 0; i < vector2.size(); i++)
+				std::cout << vector2[i] << " ";
+			std::cout << std::endl;
+			std::cout << "SIZE : " << vector2.size() << std::endl;
+
+			NAMESPACE::vector<int>	vector;
+			std::cout << "INSERT BEGIN AT BEGIN : ";
+			vector.insert(vector.begin(), *vector2.begin());
+			std::cout << *vector.begin() << std::endl;
+
+			
 		}
 
 		std::cout << "-----------------------------------------------------------" << std::endl;
