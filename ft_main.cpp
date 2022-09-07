@@ -441,6 +441,49 @@ int	main(void)
 		}
 
 		std::cout << "-----------------------------------------------------------" << std::endl;
+
+		{	// RELATIONAL OPERATOR
+			NAMESPACE::vector<int>	vector;
+			NAMESPACE::vector<int>	vector2;
+			NAMESPACE::vector<int>	vector3;
+			for (size_t i = 0; i < 10; i++)
+				vector.push_back(i * 7);
+			for (size_t i = 0; i < 15; i++)
+				vector2.push_back(i * 10);
+			for (size_t i = 0; i < 10; i++)
+				vector3.push_back(i * 9);
+
+			std::cout << "CONTENT A : ";
+			for (size_t i = 0; i < vector.size(); i++)
+				std::cout << vector[i] << " ";
+			std::cout << "|SIZE : " << vector.size() << std::endl;
+			std::cout << "CONTENT B : ";
+			for (size_t i = 0; i < vector2.size(); i++)
+				std::cout << vector2[i] << " ";
+			std::cout << "|SIZE : " << vector2.size() << std::endl;
+			std::cout << "CONTENT C : ";
+			for (size_t i = 0; i < vector3.size(); i++)
+				std::cout << vector3[i] << " ";
+			std::cout << "|SIZE : " << vector3.size() << std::endl;
+			
+			std::cout << "RELATIONAL OPERATOR :" << std::endl << std::endl;
+			std::cout << "- A VS B -" << std::endl;
+			std::cout << "== : " << (vector == vector2) << " | != : " << (vector != vector2) << std::endl;	// RELATIONAL OPERATOR
+			std::cout << " < : " << (vector < vector2) << " | >  : " << (vector > vector2) << std::endl;	// RELATIONAL OPERATOR
+			std::cout << "<= : " << (vector <= vector2) << " | >= : " << (vector >= vector2) << std::endl << std::endl;	// RELATIONAL OPERATOR
+
+			std::cout << "- A VS C -" << std::endl;
+			std::cout << "== : " << (vector == vector3) << " | != : " << (vector != vector3) << std::endl;	// RELATIONAL OPERATOR
+			std::cout << " < : " << (vector < vector3) << " | >  : " << (vector > vector3) << std::endl;	// RELATIONAL OPERATOR
+			std::cout << "<= : " << (vector <= vector3) << " | >= : " << (vector >= vector3) << std::endl << std::endl;	// RELATIONAL OPERATOR
+
+			std::cout << "- B VS C -" << std::endl;
+			std::cout << "== : " << (vector2 == vector3) << " | != : " << (vector2 != vector3) << std::endl;	// RELATIONAL OPERATOR
+			std::cout << " < : " << (vector2 < vector3) << " | >  : " << (vector2 > vector3) << std::endl;	// RELATIONAL OPERATOR
+			std::cout << "<= : " << (vector2 <= vector3) << " | >= : " << (vector2 >= vector3) << std::endl;	// RELATIONAL OPERATOR
+		}
+
+		std::cout << "-----------------------------------------------------------" << std::endl;
 	}
 
 	{	/*------------------------------- MAP -------------------------------*/

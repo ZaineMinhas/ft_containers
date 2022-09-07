@@ -6,7 +6,7 @@
 #    By: zminhas <zminhas@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/06 19:06:08 by zminhas           #+#    #+#              #
-#    Updated: 2022/09/06 19:36:16 by zminhas          ###   ########.fr        #
+#    Updated: 2022/09/07 15:43:16 by zminhas          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,26 +17,26 @@ CFLAGS =	-Wall -Wextra -Werror -std=c++98
 FT_NAME =		ft_container
 STD_NAME =		std_container
 
-FT = -D NAMESPACE=ft
-STD = -D NAMESPACE=std
+FT_SRCS =		ft_main.cpp
+STD_SRCS =		std_main.cpp
 
-SRCS =		main.cpp		\
-
-OBJS =		$(SRCS:.cpp=.o)
+FT_OBJS =		$(FT_SRCS:.cpp=.o)
+STD_OBJS =		$(STD_SRCS:.cpp=.o)
 
 .cpp.o:
-			$(CXX) $(CFLAGS) $(FT) -c -I ./ $< -o $(<:.cpp=.o)
+			$(CXX) $(CFLAGS) -c -I ./ $< -o $(<:.cpp=.o)
 
 all : 		$(FT_NAME) $(STD_NAME)
 
-$(FT_NAME):	$(OBJS)
-			$(CXX) $(CFLAGS) $(FT) -o $(FT_NAME) $(OBJS)
+$(FT_NAME):	$(FT_OBJS)
+			$(CXX) $(CFLAGS) -o $(FT_NAME) $(FT_OBJS)
 
-$(STD_NAME):	$(OBJS)
-			$(CXX) $(CFLAGS) $(STD) -o $(STD_NAME) $(OBJS)
+$(STD_NAME):	$(STD_OBJS)
+			$(CXX) $(CFLAGS) -o $(STD_NAME) $(STD_OBJS)
 
 clean:
-			rm -f $(OBJS)
+			rm -f $(FT_OBJS)
+			rm -f $(STD_OBJS)
 
 fclean: 	clean
 			rm -f $(FT_NAME)
